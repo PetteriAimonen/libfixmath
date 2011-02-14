@@ -34,9 +34,26 @@
 				</Linker>
 			</Target>
 		</Build>
-		<Unit filename="main.c">
+		<Unit filename="Makefile" />
+		<Unit filename="fix16.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="fix16.h" />
+		<Unit filename="fix16_sqrt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fix16_trig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fixmath.h" />
+		<Unit filename="fract32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fract32.h" />
+		<Unit filename="uint32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="uint32.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
