@@ -11,11 +11,13 @@ extern "C"
 #define fix16_MAX (fix16_t)0x7FFFFFFF /*!< the maximum value of fix16_t */
 #define fix16_MIN (fix16_t)0x80000000 /*!< the minimum value of fix16_t */
 
+#define fix16_pi  205887     /*!< fix16_t value of pi */
+#define fix16_e   178145     /*!< fix16_t value of e */
+#define fix16_one 0x00010000 /*!< fix16_t value of 1 */
+
 typedef int32_t fix16_t;
 
-extern const fix16_t fix16_pi; /*!< fix16_t value of pi */
-extern const fix16_t fix16_e; /*!< fix16_t value of e */
-extern const fix16_t fix16_one; /*!< fix16_t value of 1 */
+
 
 /*! Coverts a fix16_t to a double and returns the result.
 */

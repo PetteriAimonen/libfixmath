@@ -1,10 +1,11 @@
 #include "fix16.h"
 
 
-
+/* Replaced as defines, these are left here to uncomment for code dependant on the symbols.
 const fix16_t fix16_pi  = 205887;
 const fix16_t fix16_e   = 178145;
 const fix16_t fix16_one = 0x00010000;
+*/
 
 
 
