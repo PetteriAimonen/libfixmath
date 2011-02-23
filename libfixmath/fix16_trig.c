@@ -5,7 +5,7 @@
 #ifndef FIXMATH_NO_CACHE
 static fix16_t _fix16_sin_cache_index[4096]  = { 0 };
 static fix16_t _fix16_sin_cache_value[4096]  = { 0 };
-static fix16_t _fix16_atan_cache_index[4096] = { 0 };
+static fix16_t _fix16_atan_cache_index[2][4096] = { { 0 }, { 0 } };
 static fix16_t _fix16_atan_cache_value[4096] = { 0 };
 #endif
 
@@ -68,58 +68,65 @@ fix16_t fix16_acos(fix16_t inValue) {
 	return ((fix16_pi >> 1) - fix16_asin(inValue));
 }
 
-static fix16_t _fix16_atan(fix16_t inValue) {
-	fix16_t tempOut;
-	if(inValue > 29736) {
-		tempOut = (fix16_one + fix16_mul(inValue, inValue));
-		tempOut = (fix16_one + fix16_sqrt(tempOut));
-		tempOut = fix16_div(inValue, tempOut);
-		tempOut = _fix16_atan(tempOut);
-		return (tempOut << 1);
+fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
+	#ifndef FIXMATH_NO_CACHE
+	uintptr_t hash = (inX ^ inY);
+	hash ^= hash >> 20;
+	hash &= 0x0FFF;
+	if((_fix16_atan_cache_index[0][hash] == inX) && (_fix16_atan_cache_index[1][hash] == inY))
+		return _fix16_atan_cache_value[hash];
+	#endif
+
+	fix16_t absy = (inY < 0 ? -inY : inY);
+	int64_t i = inX + (inX >= 0 ? -absy : absy);
+	int64_t j = (inX >= 0 ? inX : -inX) + absy;
+	if(j == 0)
+		return (inY < 0 ? (-fix16_pi >> 1) : (fix16_pi >> 1));
+
+	int64_t is, js;
+	int64_t angle;
+	angle  = (4216574283LL * -i) / j;
+	is = (i * i);
+	is = (is + (1LL << 15)) >> 16;
+	js = (j * j);
+	js = (js + (1LL << 15)) >> 16;
+	if((is | js) >> 32) {
+		if((is | js) >> 40) {
+			is >>= 16;
+			js >>= 16;
+		} else {
+			is >>= 8;
+			js >>= 8;
+		}
 	}
+	is = (is * i);
+	is = (is + (1LL << 15)) >> 16;
+	js = (js * j);
+	js = (js + (1LL << 15)) >> 16;
+	if((is | js) >> 50) {
+		if((is | js) >> 57) {
+			is >>= 14;
+			js >>= 14;
+		} else {
+			is >>= 7;
+			js >>= 7;
+		}
+	}
+	is = is * 51472LL;
+	angle += (is / js) << 14;
+	angle += (inX >= 0 ? 3373259426LL : 10119778278LL);
+	angle = (angle + (1LL << 15)) >> 16;
+	angle = (inY < 0 ? -angle : angle);
 
-	fix16_t tempValue = inValue;
-	fix16_t tempValSq = fix16_mul(inValue, inValue);
-	tempOut = inValue;
-	tempValue = fix16_mul(tempValue, tempValSq);
-	tempOut += (tempValue / 3);
-	tempValue = fix16_mul(tempValue, tempValSq);
-	tempOut += (tempValue / 5);
-	tempValue = fix16_mul(tempValue, tempValSq);
-	tempOut += (tempValue / 7);
-	tempValue = fix16_mul(tempValue, tempValSq);
-	tempOut += (tempValue / 9);
-	tempValue = fix16_mul(tempValue, tempValSq);
-	tempOut += (tempValue / 11);
+	#ifndef FIXMATH_NO_CACHE
+	_fix16_atan_cache_index[0][hash] = inX;
+	_fix16_atan_cache_index[1][hash] = inY;
+	_fix16_atan_cache_value[hash] = angle;
+	#endif
 
-	return tempOut;
+	return angle;
 }
 
 fix16_t fix16_atan(fix16_t inValue) {
-	#ifndef FIXMATH_NO_CACHE
-	fix16_t tempIndex = (((inValue >> 16) ^ (inValue >> 4)) & 0x00000FFF);
-	if(_fix16_atan_cache_index[tempIndex] == inValue)
-		return _fix16_atan_cache_value[tempIndex];
-	#endif
-	fix16_t tempOut = _fix16_atan(inValue);
-	#ifndef FIXMATH_NO_CACHE
-	_fix16_atan_cache_index[tempIndex] = inValue;
-	_fix16_atan_cache_value[tempIndex] = tempOut;
-	#endif
-	return tempOut;
-}
-
-fix16_t fix16_atan2(fix16_t inY, fix16_t inX) {
-	if(inX == 0) {
-		if(inY == 0)
-			return 0;
-		if(inY > 0)
-			return (fix16_pi >> 1);
-		return -(fix16_pi >> 1);
-	}
-	if(inY > 0)
-		return fix16_atan(fix16_div(inY, inX));
-	if(inY >= 0)
-		return (fix16_pi + fix16_atan(fix16_div(inY, inX)));
-	return (-fix16_pi + fix16_atan(fix16_div(inY, inX)));
+	return fix16_atan2(inValue, fix16_one);
 }
