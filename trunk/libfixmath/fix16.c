@@ -91,10 +91,26 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
 
 
 
+fix16_t fix16_lerp8(fix16_t inArg0, fix16_t inArg1, uint8_t inFract) {
+	int64_t tempOut;
+	tempOut   = ((int64_t)inArg0 * (256 - inFract));
+	tempOut  += ((int64_t)inArg1 * inFract);
+	tempOut >>= 8;
+	return (fix16_t)tempOut;
+}
+
 fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract) {
 	int64_t tempOut;
 	tempOut   = ((int64_t)inArg0 * (fix16_one - inFract));
 	tempOut  += ((int64_t)inArg1 * inFract);
 	tempOut >>= 16;
+	return (fix16_t)tempOut;
+}
+
+fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract) {
+	int64_t tempOut;
+	tempOut   = ((int64_t)inArg0 * (0 - inFract));
+	tempOut  += ((int64_t)inArg1 * inFract);
+	tempOut >>= 32;
 	return (fix16_t)tempOut;
 }
