@@ -87,9 +87,14 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
 	int64_t angle;
 	angle  = (4216574283LL * -i) / j;
 	is = (i * i);
-	is = (is + (1LL << 15)) >> 16;
 	js = (j * j);
+	#ifdef FIXMATH_NO_ROUNDING
+	is >>= 16;
+	js >>= 16;
+	#else
+	is = (is + (1LL << 15)) >> 16;
 	js = (js + (1LL << 15)) >> 16;
+	#endif
 	if((is | js) >> 32) {
 		if((is | js) >> 40) {
 			is >>= 16;
@@ -100,22 +105,22 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
 		}
 	}
 	is = (is * i);
-	is = (is + (1LL << 15)) >> 16;
 	js = (js * j);
+	#ifdef FIXMATH_NO_ROUNDING
+	is >>= 16;
+	js >>= 16;
+	#else
+	is = (is + (1LL << 15)) >> 16;
 	js = (js + (1LL << 15)) >> 16;
-	if((is | js) >> 50) {
-		if((is | js) >> 57) {
-			is >>= 14;
-			js >>= 14;
-		} else {
-			is >>= 7;
-			js >>= 7;
-		}
-	}
+	#endif
 	is = is * 51472LL;
 	angle += (is / js) << 14;
 	angle += (inX >= 0 ? 3373259426LL : 10119778278LL);
+	#ifdef FIXMATH_NO_ROUNDING
+	angle >>= 16;
+	#else
 	angle = (angle + (1LL << 15)) >> 16;
+	#endif
 	angle = (inY < 0 ? -angle : angle);
 
 	#ifndef FIXMATH_NO_CACHE

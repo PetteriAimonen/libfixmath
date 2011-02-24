@@ -16,6 +16,7 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-DFIXMATH_NO_CACHE" />
 				</Compiler>
 			</Target>
 			<Target title="rel">
