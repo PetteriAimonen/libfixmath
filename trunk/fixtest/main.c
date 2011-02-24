@@ -53,8 +53,8 @@ int main(int argc, char** argv) {
 
 	printf("Floating Point: %08"PRIuHICLOCK" @ %"PRIu32"Hz\n", flt_duration, HICLOCKS_PER_SEC);
 	printf("Fixed Point:    %08"PRIuHICLOCK" @ %"PRIu32"Hz\n", fix_duration, HICLOCKS_PER_SEC);
-	printf("Difference:     %08"PRIiHICLOCK" (% 3.2f%%)\n", (flt_duration - fix_duration), ((fix_duration * 100.0) / flt_duration));
-	printf("Error:          % 3.2f%%\n", ((double)fix_error / iter));
+	printf("Difference:     %08"PRIiHICLOCK" (% 3.2f%)\n", (flt_duration - fix_duration), ((fix_duration * 100.0) / flt_duration));
+	printf("Error:          %f%%\n", ((fix16_to_dbl(fix_error) * 100.0) / iter));
 
     return EXIT_SUCCESS;
 }
