@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="dbg" />
+	<File name="hiclock.c" open="1" top="0" tabpos="3">
+		<Cursor position="520" topLine="0" />
+	</File>
+	<File name="hiclock.h" open="1" top="0" tabpos="2">
+		<Cursor position="578" topLine="0" />
+	</File>
+	<File name="main.c" open="1" top="1" tabpos="1">
+		<Cursor position="139" topLine="30" />
+	</File>
+</CodeBlocks_layout_file>
