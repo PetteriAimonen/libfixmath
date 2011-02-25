@@ -1,20 +1,16 @@
 #include "fix16.h"
 
 
-/* Replaced as defines, these are left here to uncomment for code dependant on the symbols.
+/* Replaced as macros, these are left here to uncomment for code dependant on the symbols.
 const fix16_t fix16_pi  = 205887;
 const fix16_t fix16_e   = 178145;
 const fix16_t fix16_one = 0x00010000;
-*/
 
-
-
-/* See header as to why these are commented out.
-double  fix16_to_dbl(const fix16_t inVal) { return ((double)inVal / 65536.0); }
-fix16_t fix16_from_dbl(const double inVal) { return (fix16_t)(inVal * 65536.0); }
+double  fix16_to_dbl(const fix16_t inVal)   { return ((double)inVal / 65536.0); }
+fix16_t fix16_from_dbl(const double inVal)  { return (fix16_t)(inVal * 65536.0); }
 float   fix16_to_float(const fix16_t inVal) { return ((float)inVal / 65536.0f); }
 fix16_t fix16_from_float(const float inVal) { return (fix16_t)(inVal * 65536.0f); }
-int32_t fix16_to_int(const fix16_t inVal) { return ((inVal + 0x00008000) >> 16); }
+int32_t fix16_to_int(const fix16_t inVal)   { return ((inVal + 0x00008000) >> 16); }
 fix16_t fix16_from_int(const int32_t inVal) { return (inVal << 16); }
 */
 

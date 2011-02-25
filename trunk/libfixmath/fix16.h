@@ -111,6 +111,10 @@ extern fix16_t fix16_sqrt(fix16_t inValue);
 
 
 
+/*! Returns the exponent (e^) of the given fix16_t.
+*/
+extern fix16_t fix16_exp(fix16_t inValue);
+
 #ifdef __cplusplus
 }
 #endif

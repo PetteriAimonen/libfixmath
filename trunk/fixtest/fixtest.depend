@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1298567472 source:g:\vrfx\libfixmath\fixtest\main.c
+1298635002 source:g:\vrfx\libfixmath\fixtest\main.c
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
@@ -19,7 +19,7 @@
 1298453688 g:\vrfx\libfixmath\\libfixmath\fract32.h
 	<stdint.h>
 
-1298454206 g:\vrfx\libfixmath\\libfixmath\fix16.h
+1298634082 g:\vrfx\libfixmath\\libfixmath\fix16.h
 	<stdint.h>
 
 1298562746 source:g:\vrfx\libfixmath\fixtest\hiclock.c
@@ -31,4 +31,37 @@
 	<sys/time.h>
 	<windows.h>
 	<time.h>
+
+1298567472 source:i:\vrfx\libfixmath\fixtest\main.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<time.h>
+	<inttypes.h>
+	<libfixmath/fixmath.h>
+	"hiclock.h"
+
+1298453688 i:\vrfx\libfixmath\\libfixmath\fixmath.h
+	"uint32.h"
+	"fract32.h"
+	"fix16.h"
+
+1298453688 i:\vrfx\libfixmath\\libfixmath\uint32.h
+	<stdint.h>
+
+1298453688 i:\vrfx\libfixmath\\libfixmath\fract32.h
+	<stdint.h>
+
+1298577432 i:\vrfx\libfixmath\\libfixmath\fix16.h
+	<stdint.h>
+
+1298564182 i:\vrfx\libfixmath\fixtest\hiclock.h
+	<stdint.h>
+	<inttypes.h>
+	<sys/time.h>
+	<windows.h>
+	<time.h>
+
+1298562746 source:i:\vrfx\libfixmath\fixtest\hiclock.c
+	"hiclock.h"
 
