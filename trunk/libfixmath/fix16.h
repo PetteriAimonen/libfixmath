@@ -17,18 +17,26 @@ typedef int32_t fix16_t;
 #define fix16_e   178145     /*!< fix16_t value of e */
 #define fix16_one 0x00010000 /*!< fix16_t value of 1 */
 
-/*! Coverts a fix16_t to a double and returns the result. */
-#define fix16_to_dbl(inVal) ((double)((inVal) / 65536.0))
+#ifdef FIXMATH_NO_ROUNDING
 /*! Converts a double to a fix16_t and returns the result. */
 #define fix16_from_dbl(inVal) ((fix16_t)((inVal) * 65536.0))
-/*! Converts a fix16_t to a float and returns the result. */
-#define fix16_to_float(inVal) ((float)((inVal) / 65536.0f))
 /*! Converts a float to a fix16_t and returns the result. */
 #define fix16_from_float(inVal) ((fix16_t)((inVal) * 65536.0f))
-/*! Converts a fix16_t to a signed integer and returns the result. */
-#define fix16_to_int(inVal) ((int32_t)(((inVal) + (fix16_one >> 1)) >> 16))
+#else
+/*! Converts a double to a fix16_t and returns the result. */
+#define fix16_from_dbl(inVal) ((fix16_t)(((inVal) * 65536.0) + 0.5))
+/*! Converts a float to a fix16_t and returns the result. */
+#define fix16_from_float(inVal) ((fix16_t)(((inVal) * 65536.0f) + 0.5f))
+#endif
 /*! Converts a signed integer to a fix16_t and returns the result. */
 #define fix16_from_int(inVal) ((fix16_t)((inVal) << 16))
+
+/*! Coverts a fix16_t to a double and returns the result. */
+#define fix16_to_dbl(inVal) ((double)((inVal) / 65536.0))
+/*! Converts a fix16_t to a float and returns the result. */
+#define fix16_to_float(inVal) ((float)((inVal) / 65536.0f))
+/*! Converts a fix16_t to a signed integer and returns the result. */
+#define fix16_to_int(inVal) ((int32_t)(((inVal) + (fix16_one >> 1)) >> 16))
 
 /* Replaced with macros, uncomment if symbols are needed by old code.
 extern double  fix16_to_dbl(const fix16_t inVal);
