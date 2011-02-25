@@ -13,15 +13,20 @@
 //#define flt_func      expf
 //#define flt_func_str "expf"
 
-#define fix_func      fix16_atan
-#define fix_func_str "fix16_atan"
-#define flt_func      atanf
-#define flt_func_str "atanf"
+//#define fix_func      fix16_atan
+//#define fix_func_str "fix16_atan"
+//#define flt_func      atanf
+//#define flt_func_str "atanf"
 
-//#define fix_func      fix16_sin
-//#define fix_func_str "fix16_sin"
-//#define flt_func      sinf
-//#define flt_func_str "sinf"
+#define fix_func      fix16_sin
+#define fix_func_str "fix16_sin"
+#define flt_func      sinf
+#define flt_func_str "sinf"
+
+//#define fix_func      fix16_sqrt
+//#define fix_func_str "fix16_sqrt"
+//#define flt_func      sqrtf
+//#define flt_func_str "sqrtf"
 
 
 
@@ -32,7 +37,7 @@ int main(int argc, char** argv) {
 
 	uintptr_t args = (1 <<  8);
 	uintptr_t iter = (1 <<  8);
-	uintptr_t pass = (1 <<  6);
+	uintptr_t pass = (1 <<  8);
 
 	uintptr_t i;
 	srand(time(NULL));
@@ -73,8 +78,8 @@ int main(int argc, char** argv) {
 		fix_duration += (fix_end - fix_start);
 	}
 
-	printf("% 16s: %08"PRIuHICLOCK" @ %"PRIu32"Hz\n", flt_func_str, flt_duration, HICLOCKS_PER_SEC);
-	printf("% 16s: %08"PRIuHICLOCK" @ %"PRIu32"Hz\n", fix_func_str, fix_duration, HICLOCKS_PER_SEC);
+	printf("%16s: %08"PRIuHICLOCK" @ %"PRIu32"Hz\n", flt_func_str, flt_duration, HICLOCKS_PER_SEC);
+	printf("%16s: %08"PRIuHICLOCK" @ %"PRIu32"Hz\n", fix_func_str, fix_duration, HICLOCKS_PER_SEC);
 	printf("      Difference: %08"PRIiHICLOCK" (% 3.2f%%)\n", (flt_duration - fix_duration), ((fix_duration * 100.0) / flt_duration));
 	printf("           Error: %f%%\n", ((fix16_to_dbl(fix_error) * 100.0) / (args * pass)));
 

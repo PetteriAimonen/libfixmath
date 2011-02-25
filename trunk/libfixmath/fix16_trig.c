@@ -1,10 +1,13 @@
 #include "fix16.h"
 
-
-
-#ifndef FIXMATH_NO_CACHE
+#if defined(FIXMATH_SIN_LUT)
+#include "fix16_trig_sin_lut.h"
+#elif !defined(FIXMATH_NO_CACHE)
 static fix16_t _fix16_sin_cache_index[4096]  = { 0 };
 static fix16_t _fix16_sin_cache_value[4096]  = { 0 };
+#endif
+
+#ifndef FIXMATH_NO_CACHE
 static fix16_t _fix16_atan_cache_index[2][4096] = { { 0 }, { 0 } };
 static fix16_t _fix16_atan_cache_value[4096] = { 0 };
 #endif
@@ -13,6 +16,23 @@ static fix16_t _fix16_atan_cache_value[4096] = { 0 };
 
 fix16_t fix16_sin(fix16_t inAngle) {
 	fix16_t tempAngle = inAngle % (fix16_pi << 1);
+
+	#ifdef FIXMATH_SIN_LUT
+	if(tempAngle < 0)
+		tempAngle += (fix16_pi << 1);
+
+	fix16_t tempOut;
+	if(tempAngle >= fix16_pi) {
+		tempAngle -= fix16_pi;
+		if(tempAngle >= (fix16_pi >> 1))
+			tempAngle = fix16_pi - tempAngle;
+		tempOut = -_fix16_sin_lut[tempAngle];
+	} else {
+		if(tempAngle >= (fix16_pi >> 1))
+			tempAngle = fix16_pi - tempAngle;
+		tempOut = _fix16_sin_lut[tempAngle];
+	}
+	#else
 	if(tempAngle > fix16_pi)
 		tempAngle -= (fix16_pi << 1);
 	else if(tempAngle < -fix16_pi)
@@ -25,7 +45,6 @@ fix16_t fix16_sin(fix16_t inAngle) {
 	#endif
 
 	fix16_t tempAngleSq = fix16_mul(tempAngle, tempAngle);
-
 
 	#ifndef FIXMATH_FAST_SIN // Most accurate version, accurate to ~2.1%
 	fix16_t tempOut = tempAngle;
@@ -85,6 +104,7 @@ fix16_t fix16_sin(fix16_t inAngle) {
 	#ifndef FIXMATH_NO_CACHE
 	_fix16_sin_cache_index[tempIndex] = inAngle;
 	_fix16_sin_cache_value[tempIndex] = tempOut;
+	#endif
 	#endif
 
 	return tempOut;
