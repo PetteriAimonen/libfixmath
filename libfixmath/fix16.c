@@ -97,7 +97,24 @@ fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) {
 	tempResult /= inArg1;
 	return tempResult;
 	#else
-	int32_t res = (inArg0 / inArg1) << 16;
+	 int32_t rcp = (0xFFFFFFFF / inArg1);
+	 int32_t rcp_hi = rcp >> 16;
+
+	uint32_t rcp_lo = rcp & 0xFFFF;
+	 int32_t arg_hi = (inArg0 >> 16);
+	uint32_t arg_lo = (inArg0 & 0xFFFF);
+
+	 int32_t res_hi = rcp_hi * arg_hi;
+	 int32_t res_md = (rcp_hi * arg_lo) + (rcp_lo * arg_hi);
+	uint32_t res_lo = rcp_lo * arg_lo;
+
+	int32_t res = (res_hi << 16) + res_md + (res_lo >> 16);
+	#ifndef FIXMATH_NO_ROUNDING
+	res += ((res_lo >> 15) & 1);
+	#endif
+	return res;
+
+	/*int32_t res = (inArg0 / inArg1) << 16;
 	int32_t mod = inArg0 % inArg1;
 	uintptr_t i;
 	for(i = 0; i < 16; i++) {
@@ -109,7 +126,7 @@ fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) {
 	if((mod << 1) / inArg1)
 		res++;
 	#endif
-	return res;
+	return res;*/
 	#endif
 }
 
@@ -132,7 +149,28 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
 		return fix16_MAX;
 	return tempResult;
 	#else
-	int32_t res = (inArg0 / inArg1);
+	 int32_t rcp = (0xFFFFFFFF / inArg1);
+	 int32_t rcp_hi = rcp >> 16;
+	if(rcp_hi >= 32768)
+		return fix16_MAX;
+	if(rcp_hi < -32768)
+		return fix16_MIN;
+
+	uint32_t rcp_lo = rcp & 0xFFFF;
+	 int32_t arg_hi = (inArg0 >> 16);
+	uint32_t arg_lo = (inArg0 & 0xFFFF);
+
+	 int32_t res_hi = rcp_hi * arg_hi;
+	 int32_t res_md = (rcp_hi * arg_lo) + (rcp_lo * arg_hi);
+	uint32_t res_lo = rcp_lo * arg_lo;
+
+	int32_t res = (res_hi << 16) + res_md + (res_lo >> 16);
+	#ifndef FIXMATH_NO_ROUNDING
+	res += ((res_lo >> 15) & 1);
+	#endif
+	return res;
+
+	/*int32_t res = (inArg0 / inArg1);
 	if((res < -32768) || (res >= 32768))
 		return (res < 0 ? fix16_MIN : fix16_MAX);
 	res <<= 16;
@@ -147,7 +185,7 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
 	if((mod << 1) / inArg1)
 		res++;
 	#endif
-	return res;
+	return res;*/
 	#endif
 }
 
