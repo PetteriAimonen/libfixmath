@@ -115,7 +115,7 @@ fix16_t fix16_cos(fix16_t inAngle) {
 }
 
 fix16_t fix16_tan(fix16_t inAngle) {
-	return fix16_div(fix16_sin(inAngle), fix16_cos(inAngle));
+	return fix16_sdiv(fix16_sin(inAngle), fix16_cos(inAngle));
 }
 
 fix16_t fix16_asin(fix16_t inValue) {

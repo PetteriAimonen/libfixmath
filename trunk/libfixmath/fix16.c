@@ -88,6 +88,7 @@ fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1) {
 
 
 fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) {
+	#ifndef FIXMATH_NO_64BIT
 	int64_t tempResult = inArg0;
 	tempResult <<= 16;
 	#ifndef FIXMATH_NO_ROUNDING
@@ -95,6 +96,21 @@ fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) {
 	#endif
 	tempResult /= inArg1;
 	return tempResult;
+	#else
+	int32_t res = (inArg0 / inArg1) << 16;
+	int32_t mod = inArg0 % inArg1;
+	uintptr_t i;
+	for(i = 0; i < 16; i++) {
+		mod <<= 1;
+		res += (mod / inArg1) << (15 - i);
+		mod %= inArg1;
+	}
+	#ifndef FIXMATH_NO_ROUNDING
+	if((mod << 1) / inArg1)
+		res++;
+	#endif
+	return res;
+	#endif
 }
 
 fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
@@ -103,6 +119,7 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
 			return fix16_MIN;
 		return fix16_MAX;
 	}
+	#ifndef FIXMATH_NO_64BIT
 	int64_t tempResult = inArg0;
 	tempResult <<= 16;
 	#ifndef FIXMATH_NO_ROUNDING
@@ -114,6 +131,24 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
 	if(tempResult > fix16_MAX)
 		return fix16_MAX;
 	return tempResult;
+	#else
+	int32_t res = (inArg0 / inArg1);
+	if((res < -32768) || (res >= 32768))
+		return (res < 0 ? fix16_MIN : fix16_MAX);
+	res <<= 16;
+	int32_t mod = inArg0 % inArg1;
+	uintptr_t i;
+	for(i = 0; i < 16; i++) {
+		mod <<= 1;
+		res += (mod / inArg1) << (15 - i);
+		mod %= inArg1;
+	}
+	#ifndef FIXMATH_NO_ROUNDING
+	if((mod << 1) / inArg1)
+		res++;
+	#endif
+	return res;
+	#endif
 }
 
 
