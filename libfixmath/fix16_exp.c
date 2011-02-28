@@ -15,7 +15,7 @@ fix16_t fix16_exp(fix16_t inValue) {
 	if(inValue == fix16_one)
 		return fix16_e;
 	if(inValue > 681391)
-		return fix16_MAX;
+		return fix16_max;
 	if(inValue < -726817)
 		return 0;
 
