@@ -28,15 +28,33 @@ fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1) {
 
 
 fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1) {
+	#ifndef FIXMATH_NO_64BIT
 	int64_t tempResult = ((int64_t)inArg0 * (int64_t)inArg1);
 	#ifndef FIXMATH_NO_ROUNDING
 	tempResult += (fix16_one >> 1);
 	#endif
 	tempResult >>= 16;
 	return tempResult;
+	#else
+	 int16_t hi[2] = { (inArg0 >> 16),    (inArg1 >> 16)    };
+	uint16_t lo[2] = { (inArg0 & 0xFFFF), (inArg1 & 0xFFFF) };
+
+	 int32_t r_hi = hi[0] * hi[1];
+	 int32_t r_md = (hi[0] * lo[1]) + (hi[1] * lo[0]);
+	uint32_t r_lo = lo[0] * lo[1];
+	#ifndef FIXMATH_NO_ROUNDING
+	r_lo += 0xFFFF;
+	#endif
+
+	r_md += (r_hi & 0xFFFF) << 16;
+	r_md += (r_lo >> 16);
+
+	return r_md;
+	#endif
 }
 
 fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1) {
+	#ifndef FIXMATH_NO_64BIT
 	int64_t tempResult = ((int64_t)inArg0 * (int64_t)inArg1);
 	#ifndef FIXMATH_NO_ROUNDING
 	tempResult += (fix16_one >> 1);
@@ -47,6 +65,24 @@ fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1) {
 	if(tempResult > fix16_MAX)
 		return fix16_MAX;
 	return tempResult;
+	#else
+	 int16_t hi[2] = { (inArg0 >> 16),    (inArg1 >> 16)    };
+	 int32_t r_hi = hi[0] * hi[1];
+	 if(r_hi >> 16)
+		return (r_hi < 0 ? fix16_MIN : fix16_MAX);
+
+	uint16_t lo[2] = { (inArg0 & 0xFFFF), (inArg1 & 0xFFFF) };
+	 int32_t r_md = (hi[0] * lo[1]) + (hi[1] * lo[0]);
+	uint32_t r_lo = lo[0] * lo[1];
+	#ifndef FIXMATH_NO_ROUNDING
+	r_lo += 0xFFFF;
+	#endif
+
+	r_md += (r_hi & 0xFFFF) << 16;
+	r_md += (r_lo >> 16);
+
+	return r_md;
+	#endif
 }
 
 
