@@ -24,7 +24,7 @@ fix16_t fix16_sqrt(fix16_t inValue) {
 		tempOne >>= 2;
 
 	while(tempOne != 0) {
-		if (tempOp >= tempOut + tempOne) {
+		if(tempOp >= tempOut + tempOne) {
 			tempOp -= tempOut + tempOne;
 			tempOut += tempOne << 1;
 		}

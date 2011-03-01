@@ -66,41 +66,6 @@ fix16_t fix16_sin(fix16_t inAngle) {
 	tempOut = fix16_mul(tempOut, tempAngle);
 	#endif
 
-	/*// Broken implementation, meant to be slightly faster and much more accurate than the above 'accurate' implementation.
-	int64_t tempAngleSq = tempAngle * tempAngle;
-	#ifndef FIXMATH_NO_ROUNDING
-	tempAngleSq += (fix16_one >> 1);
-	#endif
-	tempAngleSq >>= 16;
-
-	int64_t tempOut;
-	tempOut = (-108 * tempAngleSq) + 11836;
-	#ifndef FIXMATH_NO_ROUNDING
-	tempOut += (fix16_one >> 1);
-	#endif
-	tempOut >>= 16;
-
-	tempOut = (tempOut * tempAngleSq) - 852176;
-	#ifndef FIXMATH_NO_ROUNDING
-	tempOut += (fix16_one >> 1);
-	#endif
-	tempOut >>= 16;
-
-	tempOut = (tempOut * tempAngleSq) + 35791394;
-	#ifndef FIXMATH_NO_ROUNDING
-	tempOut += (fix16_one >> 1);
-	#endif
-	tempOut >>= 16;
-
-	tempOut = (tempOut * tempAngleSq) - 715827883;
-	#ifndef FIXMATH_NO_ROUNDING
-	tempOut += (fix16_one >> 1);
-	#endif
-	tempOut >>= 16;
-
-	tempOut = fix16_mul(tempOut, tempAngle) + tempAngle;
-	*/
-
 	#ifndef FIXMATH_NO_CACHE
 	_fix16_sin_cache_index[tempIndex] = inAngle;
 	_fix16_sin_cache_value[tempIndex] = tempOut;
@@ -142,6 +107,8 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
 	#endif
 
 	fix16_t absy = (inY < 0 ? -inY : inY);
+
+	#ifndef FIXMATH_NO_64BIT
 	int64_t i = inX + (inX >= 0 ? -absy : absy);
 	int64_t j = (inX >= 0 ? inX : -inX) + absy;
 	if(j == 0)
@@ -182,6 +149,24 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
 	angle += (fix16_one >> 1);
 	#endif
 	angle >>= 16;
+	#else
+    fix16_t angle;
+    if(inX >= 0) {
+        fix16_t r = fix16_sdiv(fix16_sadd(inX, -absy),
+                fix16_sadd(inX, absy));
+        angle = fix16_sadd(fix16_sadd(
+                    fix16_mul(12864, fix16_mul(r, fix16_mul(r, r))),
+                    fix16_mul(-64336, r)),
+                51471); // pi/4
+    } else {
+        fix16_t r = fix16_sdiv(fix16_sadd(inX, absy),
+                fix16_sadd(absy, -inX));
+        angle = fix16_sadd(fix16_sadd(
+                    fix16_mul(12864, fix16_mul(r, fix16_mul(r, r))),
+                    fix16_mul(-64336, r)),
+                154415); // 3pi/4
+    }
+	#endif
 	angle = (inY < 0 ? -angle : angle);
 
 	#ifndef FIXMATH_NO_CACHE

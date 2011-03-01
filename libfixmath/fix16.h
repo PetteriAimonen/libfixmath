@@ -66,11 +66,13 @@ extern fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1);
 
 
 
+#ifndef FIXMATH_NO_64BIT
 /*! Returns the linear interpolation: (inArg0 * (1 - inFract)) + (inArg1 * inFract)
 */
 extern fix16_t fix16_lerp8(fix16_t inArg0, fix16_t inArg1, uint8_t inFract);
 extern fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract);
 extern fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract);
+#endif
 
 
 
