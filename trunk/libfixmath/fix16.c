@@ -83,26 +83,60 @@ fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) {
 	tempResult /= inArg1;
 	return tempResult;
 	#else
-	int32_t rcp = (0xFFFFFFFF / inArg1);
-	#ifndef FIXMATH_FAST_DIV
-	if(((0xFFFFFFFF % inArg1) + 1) >= inArg1)
-		rcp++;
-	#endif
-	int32_t rcp_hi = rcp >> 16;
+	int neg = ((inArg0 < 0) != (inArg1 < 0));
+	inArg0 = (inArg0 < 0 ? -inArg0 : inArg0);
+	inArg1 = (inArg1 < 0 ? -inArg1 : inArg1);
 
-	uint32_t rcp_lo = rcp & 0xFFFF;
-	 int32_t arg_hi = (inArg0 >> 16);
-	uint32_t arg_lo = (inArg0 & 0xFFFF);
+	while(((inArg0 | inArg1) & 1) == 0) {
+		inArg0 >>= 1;
+		inArg1 >>= 1;
+	}
 
-	 int32_t res_hi = rcp_hi * arg_hi;
-	 int32_t res_md = (rcp_hi * arg_lo) + (rcp_lo * arg_hi);
-	uint32_t res_lo = rcp_lo * arg_lo;
+	uint32_t r_hi = (inArg0 / inArg1);
 
-	int32_t res = (res_hi << 16) + res_md + (res_lo >> 16);
+	uint32_t n_lo = (inArg0 % inArg1);
+	uint32_t n_hi = (n_lo >> 16);
+	n_lo <<= 16;
+
+	uint32_t i, arg;
+	for(i = 1, arg = inArg1; ((n_lo | arg) & 1) == 0; i <<= 1) {
+		n_lo = ((n_lo >> 1) | (n_hi << 31));
+		n_hi =  (n_hi >> 1);
+		arg >>= 1;
+	}
+
+	uint32_t res = 0;
+	if(n_hi) {
+		uint32_t arg_lo, arg_hi;
+		for(arg_lo = inArg1; (arg_lo >> 31) == 0; arg_lo <<= 1, i <<= 1);
+		for(arg_hi = (arg_lo >> 31), arg_lo <<= 1, i <<= 1; arg_hi < n_hi; arg_hi = (arg_hi << 1) | (arg_lo >> 31), arg_lo <<= 1, i <<= 1);
+
+		do {
+			arg_lo = (arg_lo >> 1) | (arg_hi << 31);
+			arg_hi = (arg_hi >> 1);
+			i >>= 1;
+			if(arg_hi < n_hi) {
+				n_hi -= arg_hi;
+				if(arg_lo > n_lo)
+					n_hi--;
+				n_lo -= arg_lo;
+				res += i;
+			} else if((arg_hi == n_hi) && (arg_lo <= n_lo)) {
+				n_hi -= arg_hi;
+				n_lo -= arg_lo;
+				res += i;
+			}
+		} while(n_hi);
+	}
+
+	res += (n_lo / inArg1);
 	#ifndef FIXMATH_NO_ROUNDING
-	res += ((res_lo >> 15) & 1);
+	if((n_lo % inArg1) >= (inArg1 >> 1))
+		res++;
 	#endif
-	return res;
+	res += (r_hi << 16);
+
+	return (neg ? -res : res);
 	#endif
 }
 
@@ -120,42 +154,73 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
 	#endif
 	tempResult /= inArg1;
 	if(tempResult < fix16_min)
-		return fix16_MIN;
+		return fix16_min;
 	if(tempResult > fix16_max)
 		return fix16_max;
 	return tempResult;
 	#else
-	int32_t rcp = (0xFFFFFFFF / inArg1);
-	#ifndef FIXMATH_FAST_DIV
-	if(((0xFFFFFFFF % inArg1) + 1) >= inArg1)
-		rcp++;
-	#endif
-	int32_t rcp_hi = rcp >> 16;
-	if(rcp_hi >= 32768)
-		return fix16_max;
-	if(rcp_hi < -32768)
-		return fix16_min;
+	int neg = ((inArg0 < 0) != (inArg1 < 0));
+	inArg0 = (inArg0 < 0 ? -inArg0 : inArg0);
+	inArg1 = (inArg1 < 0 ? -inArg1 : inArg1);
 
-	uint32_t rcp_lo = rcp & 0xFFFF;
-	 int32_t arg_hi = (inArg0 >> 16);
-	uint32_t arg_lo = (inArg0 & 0xFFFF);
+	while(((inArg0 | inArg1) & 1) == 0) {
+		inArg0 >>= 1;
+		inArg1 >>= 1;
+	}
 
-	 int32_t res_hi = rcp_hi * arg_hi;
-	 int32_t res_md = (rcp_hi * arg_lo) + (rcp_lo * arg_hi);
-	uint32_t res_lo = rcp_lo * arg_lo;
+	uint32_t r_hi = (inArg0 / inArg1);
+	if(r_hi > (neg ? 32768 : 32767))
+		return (neg ? fix16_min : fix16_max);
 
-	// TODO - Check properly for overflows at this stage.
+	uint32_t n_lo = (inArg0 % inArg1);
+	uint32_t n_hi = (n_lo >> 16);
+	n_lo <<= 16;
 
-	int32_t res = (res_hi << 16) + res_md + (res_lo >> 16);
+	uint32_t i, arg;
+	for(i = 1, arg = inArg1; ((n_lo | arg) & 1) == 0; i <<= 1) {
+		n_lo = ((n_lo >> 1) | (n_hi << 31));
+		n_hi =  (n_hi >> 1);
+		arg >>= 1;
+	}
+
+	uint32_t res = 0;
+	if(n_hi) {
+		uint32_t arg_lo, arg_hi;
+		for(arg_lo = inArg1; (arg_lo >> 31) == 0; arg_lo <<= 1, i <<= 1);
+		for(arg_hi = (arg_lo >> 31), arg_lo <<= 1, i <<= 1; arg_hi < n_hi; arg_hi = (arg_hi << 1) | (arg_lo >> 31), arg_lo <<= 1, i <<= 1);
+
+		do {
+			arg_lo = (arg_lo >> 1) | (arg_hi << 31);
+			arg_hi = (arg_hi >> 1);
+			i >>= 1;
+			if(arg_hi < n_hi) {
+				n_hi -= arg_hi;
+				if(arg_lo > n_lo)
+					n_hi--;
+				n_lo -= arg_lo;
+				res += i;
+			} else if((arg_hi == n_hi) && (arg_lo <= n_lo)) {
+				n_hi -= arg_hi;
+				n_lo -= arg_lo;
+				res += i;
+			}
+		} while(n_hi);
+	}
+
+	res += (n_lo / inArg1);
 	#ifndef FIXMATH_NO_ROUNDING
-	res += ((res_lo >> 15) & 1);
+	if((n_lo % inArg1) >= (inArg1 >> 1))
+		res++;
 	#endif
-	return res;
+	res += (r_hi << 16);
+
+	return (neg ? -res : res);
 	#endif
 }
 
 
 
+#ifndef FIXMATH_NO_64BIT
 fix16_t fix16_lerp8(fix16_t inArg0, fix16_t inArg1, uint8_t inFract) {
 	int64_t tempOut;
 	tempOut   = ((int64_t)inArg0 * (256 - inFract));
@@ -179,3 +244,4 @@ fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract) {
 	tempOut >>= 32;
 	return (fix16_t)tempOut;
 }
+#endif
