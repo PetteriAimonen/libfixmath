@@ -38,7 +38,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-DFIXMATH_NO_CACHE" />
-			<Add option="-DFIXMATH_SIN_LUT" />
+			<Add option="-DFIXMATH_NO_64BIT" />
 		</Compiler>
 		<Unit filename="Makefile" />
 		<Unit filename="fix16.c">
@@ -59,6 +59,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="fract32.h" />
+		<Unit filename="int64.h" />
 		<Unit filename="uint32.c">
 			<Option compilerVar="CC" />
 		</Unit>
