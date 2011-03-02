@@ -48,7 +48,7 @@ extern fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1);
 
 static inline fix16_t fix16_sub(fix16_t inArg0, fix16_t inArg1) { return (inArg0 - inArg1); }
 
-static inline fix16_t fix16_ssub(fix16_t inArg0, fix16_t inArg1) { return fix16_sadd(inArg0, inArg1);}
+static inline fix16_t fix16_ssub(fix16_t inArg0, fix16_t inArg1) { return fix16_sadd(inArg0, -inArg1);}
 
 
 
