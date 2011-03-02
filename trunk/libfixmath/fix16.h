@@ -40,9 +40,15 @@ static inline int32_t fix16_to_int(const fix16_t inVal)   { return ((inVal + 0x0
 
 
 
+static inline fix16_t fix16_add(fix16_t inArg0, fix16_t inArg1) { return (inArg0 + inArg1); }
+
 /*! Performs a saturated addition (overflow-protected) of the two given fix16_t's and returns the result.
 */
 extern fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1);
+
+static inline fix16_t fix16_sub(fix16_t inArg0, fix16_t inArg1) { return (inArg0 - inArg1); }
+
+static inline fix16_t fix16_ssub(fix16_t inArg0, fix16_t inArg1) { return fix16_sadd(inArg0, inArg1);}
 
 
 
