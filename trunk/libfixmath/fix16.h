@@ -118,6 +118,7 @@ extern fix16_t fix16_exp(fix16_t inValue);
 
 #ifdef __cplusplus
 }
+#include "fix16.hpp"
 #endif
 
 #endif
