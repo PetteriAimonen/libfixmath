@@ -207,11 +207,10 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
 		} while(n_hi);
 	}
 
-	res += (n_lo / inArg1);
 	#ifndef FIXMATH_NO_ROUNDING
-	if((n_lo % inArg1) >= (inArg1 >> 1))
-		res++;
+	n_lo += (inArg1 >> 1);
 	#endif
+	res += (n_lo / inArg1);
 	res += (r_hi << 16);
 
 	return (neg ? -res : res);
