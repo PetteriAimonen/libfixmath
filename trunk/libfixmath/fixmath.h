@@ -12,6 +12,7 @@ extern "C"
 */
 
 #include "uint32.h"
+#include "int64.h"
 #include "fract32.h"
 #include "fix16.h"
 

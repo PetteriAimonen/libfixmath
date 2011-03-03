@@ -1,4 +1,5 @@
 #include "fix16.h"
+#include "int64.h"
 
 
 
@@ -219,23 +220,21 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
 
 
 
-#ifndef FIXMATH_NO_64BIT
 fix16_t fix16_lerp8(fix16_t inArg0, fix16_t inArg1, uint8_t inFract) {
-	int64_t tempOut;
-	tempOut   = ((int64_t)inArg0 * (256 - inFract));
-	tempOut  += ((int64_t)inArg1 * inFract);
-	tempOut >>= 8;
-	return (fix16_t)tempOut;
+	int64_t tempOut = int64_mul_i32_i32(inArg0, ((1 << 8) - inFract));
+	tempOut = int64_add(tempOut, int64_mul_i32_i32(inArg1, inFract));
+	tempOut = int64_shift(tempOut, -8);
+	return (fix16_t)int64_lo(tempOut);
 }
 
 fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract) {
-	int64_t tempOut;
-	tempOut   = ((int64_t)inArg0 * (fix16_one - inFract));
-	tempOut  += ((int64_t)inArg1 * inFract);
-	tempOut >>= 16;
-	return (fix16_t)tempOut;
+	int64_t tempOut = int64_mul_i32_i32(inArg0, ((1 << 16) - inFract));
+	tempOut = int64_add(tempOut, int64_mul_i32_i32(inArg1, inFract));
+	tempOut = int64_shift(tempOut, -16);
+	return (fix16_t)int64_lo(tempOut);
 }
 
+#ifndef FIXMATH_NO_64BIT
 fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract) {
 	int64_t tempOut;
 	tempOut   = ((int64_t)inArg0 * (0 - inFract));
