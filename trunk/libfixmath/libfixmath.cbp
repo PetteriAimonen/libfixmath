@@ -36,15 +36,12 @@
 				</Linker>
 			</Target>
 		</Build>
-		<Compiler>
-			<Add option="-DFIXMATH_NO_CACHE" />
-			<Add option="-DFIXMATH_NO_64BIT" />
-		</Compiler>
 		<Unit filename="Makefile" />
 		<Unit filename="fix16.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="fix16.h" />
+		<Unit filename="fix16.hpp" />
 		<Unit filename="fix16_exp.c">
 			<Option compilerVar="CC" />
 		</Unit>

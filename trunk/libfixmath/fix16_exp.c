@@ -1,4 +1,5 @@
 #include "fix16.h"
+#include "int64.h"
 
 
 
@@ -26,23 +27,22 @@ fix16_t fix16_exp(fix16_t inValue) {
 		return _fix16_exp_cache_value[tempIndex];
 	#endif
 
-	int64_t tempOut = fix16_one;
-	tempOut += inValue;
-	int64_t tempValue = inValue;
+	int64_t tempOut = int64_add(int64_from_int32(fix16_one), int64_from_int32(inValue));
+	int64_t tempValue = int64_from_int32(inValue);
 	uint32_t i, n;
 	for(i = 3, n = 2; i < 13; n *= i, i++) {
-		tempValue *= inValue;
+		tempValue = int64_mul_i64_i32(tempValue, inValue);
 		#ifndef FIXMATH_NO_ROUNDING
-		tempValue += (fix16_one >> 1);
+		tempValue = int64_add(tempValue, int64_from_int32(fix16_one >> 1));
 		#endif
-		tempValue >>= 16;
-		tempOut += (tempValue / n);
+		tempValue = int64_shift(tempValue, -16);
+		tempOut = int64_add(tempOut, int64_div_i64_i32(tempValue, n));
 	}
 
 	#ifndef FIXMATH_NO_CACHE
 	_fix16_exp_cache_index[tempIndex] = inValue;
-	_fix16_exp_cache_value[tempIndex] = tempOut;
+	_fix16_exp_cache_value[tempIndex] = int64_lo(tempOut);
 	#endif
 
-	return tempOut;
+	return int64_lo(tempOut);
 }
