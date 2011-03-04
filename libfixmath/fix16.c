@@ -14,6 +14,22 @@ fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1) {
 
 
 
+#if defined(__arm__) || defined(_ARM)
+fix16_t fix16_mul(int32_t inArg0, int32_t inArg1) {
+	fix16_t  res;
+	asm(
+	"smull %1, r0, %2, %3\n\t"
+	#ifndef FIXMATH_NO_ROUNDING
+	"add   %1, %1, #0x8000\n\t"
+	#endif
+	"mov   %1, %1, LSR #16\n\t"
+	"or    %1, %1, r0, LSL #16"
+	: "=r"(res)
+	: "r"(inArg0), "r"(inArg1)
+	: "r0");
+	return res;
+}
+#else
 fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1) {
 	#ifndef FIXMATH_NO_64BIT
 	int64_t tempResult = ((int64_t)inArg0 * (int64_t)inArg1);
@@ -39,6 +55,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1) {
 	return r_md;
 	#endif
 }
+#endif
 
 fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1) {
 	#ifndef FIXMATH_NO_64BIT
