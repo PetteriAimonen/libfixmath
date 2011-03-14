@@ -22,8 +22,8 @@ fix16_t fix16_mul(int32_t inArg0, int32_t inArg1) {
 	#ifndef FIXMATH_NO_ROUNDING
 	"add   %0, %0, #0x8000\n\t"
 	#endif
-	"mov   %0, %0, LSR #16\n\t"
-	"or    %0, %0, r0, LSL #16"
+	"mov   %0, %0, lsr #16\n\t"
+	"orr   %0, %0, r0, lsl #16"
 	: "=r"(res)
 	: "r"(inArg0), "r"(inArg1)
 	: "r0");
