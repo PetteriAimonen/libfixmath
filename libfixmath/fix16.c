@@ -14,7 +14,7 @@ fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1) {
 
 
 
-#if (defined(__arm__) || defined(_ARM)) && !defined(__thumb__)
+#if defined(__arm__) || defined(_ARM) || defined(__thumb2__)
 fix16_t fix16_mul(int32_t inArg0, int32_t inArg1) {
 	fix16_t  res;
 	asm(
