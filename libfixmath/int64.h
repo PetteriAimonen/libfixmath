@@ -40,6 +40,13 @@ static inline __int64_t int64_from_int32(int32_t x) { return (__int64_t){ (x < 0
 static inline   int32_t int64_hi(__int64_t x) { return x.hi; }
 static inline  uint32_t int64_lo(__int64_t x) { return x.lo; }
 
+static inline int int64_cmp_eq(__int64_t x, __int64_t y) { return ((x.hi == y.hi) && (x.lo == y.lo)); }
+static inline int int64_cmp_ne(__int64_t x, __int64_t y) { return ((x.hi != y.hi) || (x.lo != y.lo)); }
+static inline int int64_cmp_gt(__int64_t x, __int64_t y) { return ((x.hi > y.hi) || ((x.hi == y.hi) && (x.lo >  y.lo))); }
+static inline int int64_cmp_ge(__int64_t x, __int64_t y) { return ((x.hi > y.hi) || ((x.hi == y.hi) && (x.lo >= y.lo))); }
+static inline int int64_cmp_lt(__int64_t x, __int64_t y) { return ((x.hi < y.hi) || ((x.hi == y.hi) && (x.lo <  y.lo))); }
+static inline int int64_cmp_le(__int64_t x, __int64_t y) { return ((x.hi < y.hi) || ((x.hi == y.hi) && (x.lo <= y.lo))); }
+
 static inline __int64_t int64_add(__int64_t x, __int64_t y) {
 	__int64_t ret;
 	ret.hi = x.hi + y.hi;
@@ -129,27 +136,20 @@ static inline __int64_t int64_div_i64_i32(__int64_t x, int32_t y) {
 	__int64_t _y = int64_from_int32(y);
 
 	__int64_t i;
-	for(i = int64_from_int32(1); _y < x; _y = int64_shift(_y, 1), i = int64_shift(i, 1));
+	for(i = int64_from_int32(1); int64_cmp_lt(_y, x); _y = int64_shift(_y, 1), i = int64_shift(i, 1));
 
 	while(x.hi) {
 		_y = int64_shift(_y, -1);
 		 i = int64_shift(i, -1);
-		if(in64_cmp_ge(x, _y)) {
+		if(int64_cmp_ge(x, _y)) {
 			x = int64_sub(x, _y);
 			ret = int64_add(ret, i);
 		}
 	}
 
-	ret = int64_add(ret, int64_from_int32(x.lo / y))
+	ret = int64_add(ret, int64_from_int32(x.lo / y));
 	return (neg ? int64_neg(ret) : ret);
 }
-
-static inline int int64_cmp_eq(__int64_t x, __int64_t y) { return ((x.hi == y.hi) && (x.lo == y.lo)); }
-static inline int int64_cmp_ne(__int64_t x, __int64_t y) { return ((x.hi != y.hi) || (x.lo != y.lo)); }
-static inline int int64_cmp_gt(__int64_t x, __int64_t y) { return ((x.hi > y.hi) || ((x.hi == y.hi) && (x.lo >  y.lo))); }
-static inline int int64_cmp_ge(__int64_t x, __int64_t y) { return ((x.hi > y.hi) || ((x.hi == y.hi) && (x.lo >= y.lo))); }
-static inline int int64_cmp_lt(__int64_t x, __int64_t y) { return ((x.hi < y.hi) || ((x.hi == y.hi) && (x.lo <  y.lo))); }
-static inline int int64_cmp_le(__int64_t x, __int64_t y) { return ((x.hi < y.hi) || ((x.hi == y.hi) && (x.lo <= y.lo))); }
 
 #define int64_t __int64_t
 
