@@ -16,16 +16,17 @@ fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1) {
 
 #if defined(__arm__) || defined(_ARM) || defined(__thumb2__)
 fix16_t fix16_mul(int32_t inArg0, int32_t inArg1) {
-	fix16_t  res;
+	register fix16_t res;
+	register fix16_t tmp;
 	asm(
-	"smull %0, r0, %1, %2\n\t"
+	"smull %0, %3, %1, %2\n\t"
 	#ifndef FIXMATH_NO_ROUNDING
 	"add   %0, %0, #0x8000\n\t"
 	#endif
 	"mov   %0, %0, lsr #16\n\t"
-	"orr   %0, %0, r0, lsl #16"
+	"orr   %0, %0, %3, lsl #16"
 	: "=r"(res)
-	: "r"(inArg0), "r"(inArg1)
+	: "r"(inArg0), "r"(inArg1), "r"(tmp)
 	: "r0");
 	return res;
 }
