@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "fix16.h"
 
 #if defined(FIXMATH_SIN_LUT)
@@ -13,6 +14,35 @@ static fix16_t _fix16_atan_cache_value[4096] = { 0 };
 #endif
 
 
+fix16_t fix16_sin_parabola(fix16_t inAngle)
+{
+	fix16_t abs_inAngle, abs_retval, retval;
+	fix16_t mask;
+
+	/* Absolute function */
+	mask = (inAngle >> (sizeof(fix16_t)*CHAR_BIT-1));
+	abs_inAngle = (inAngle + mask) ^ mask;
+	
+	/* On 0->PI, sin looks like x² that is :
+	   - centered on PI/2,
+	   - equals 1 on PI/2,
+	   - equals 0 on 0 and PI
+	  that means :  4/PI * x  - 4/PI² * x²
+	  Use abs(x) to handle (-PI) -> 0 zone.
+	 */
+	retval = fix16_mul(FOUR_DIV_PI, inAngle) + fix16_mul( fix16_mul(_FOUR_DIV_PI2, inAngle), abs_inAngle );
+	/* At this point, retval equals sin(inAngle) on important points ( -PI, -PI/2, 0, PI/2, PI),
+	   but is not very precise between these points
+	 */
+	#ifndef FIXMATH_FAST_SIN
+	/* Absolute value of retval */
+	mask = (retval >> (sizeof(fix16_t)*CHAR_BIT-1));
+	abs_retval = (retval + mask) ^ mask;
+	/* So improve its precision by adding some x^4 component to retval */
+	retval += fix16_mul(X4_CORRECTION_COMPONENT, fix16_mul(retval, abs_retval) - retval );
+	#endif
+	return retval;
+}
 
 fix16_t fix16_sin(fix16_t inAngle) {
 	fix16_t tempAngle = inAngle % (fix16_pi << 1);

@@ -10,6 +10,10 @@ extern "C"
 
 typedef int32_t fix16_t;
 
+static const fix16_t FOUR_DIV_PI  = 0x145F3;			/*!< Fix16 value of 4/PI */
+static const fix16_t _FOUR_DIV_PI2 = 0xFFFF9840; 		/*!< Fix16 value of -4/PI² */
+static const fix16_t X4_CORRECTION_COMPONENT = 0x399A; 	/*!< Fix16 value of 0.225 */
+
 static const fix16_t fix16_max = 0x7FFFFFFF; /*!< the maximum value of fix16_t */
 static const fix16_t fix16_min = 0x80000000; /*!< the minimum value of fix16_t */
 
@@ -80,7 +84,9 @@ extern fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract);
 extern fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract);
 #endif
 
-
+/*! Returns the sine of the given fix16_t.
+*/
+extern fix16_t fix16_sin_parabola(fix16_t inAngle);
 
 /*! Returns the sine of the given fix16_t.
 */
