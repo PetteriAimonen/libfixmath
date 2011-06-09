@@ -128,6 +128,8 @@ fix16_t fix16_acos(fix16_t inValue) {
 }
 
 fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
+	fix16_t abs_inY, mask, angle, r, r_3;
+
 	#ifndef FIXMATH_NO_CACHE
 	uintptr_t hash = (inX ^ inY);
 	hash ^= hash >> 20;
@@ -136,68 +138,24 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
 		return _fix16_atan_cache_value[hash];
 	#endif
 
-	fix16_t absy = (inY < 0 ? -inY : inY);
+	/* Absolute inY */
+	mask = (inY >> (sizeof(fix16_t)*CHAR_BIT-1));
+	abs_inY = (inY + mask) ^ mask;
 
-	#ifndef FIXMATH_NO_64BIT
-	int64_t i = inX + (inX >= 0 ? -absy : absy);
-	int64_t j = (inX >= 0 ? inX : -inX) + absy;
-	if(j == 0)
-		return (inY < 0 ? (-fix16_pi >> 1) : (fix16_pi >> 1));
-
-	int64_t is, js;
-	int64_t angle;
-	angle  = (4216574283LL * -i) / j;
-	is = (i * i);
-	js = (j * j);
-	#ifndef FIXMATH_NO_ROUNDING
-	is += (fix16_one >> 1);
-	js += (fix16_one >> 1);
-	#endif
-	is >>= 16;
-	js >>= 16;
-	if((is | js) >> 32) {
-		if((is | js) >> 40) {
-			is >>= 16;
-			js >>= 16;
-		} else {
-			is >>= 8;
-			js >>= 8;
-		}
+	if (inX >= 0)
+	{
+		r = fix16_div( (inX - abs_inY), (inX + abs_inY));
+		r_3 = fix16_mul(fix16_mul(r, r),r);
+		angle = fix16_mul(0x00003240 , r_3) - fix16_mul(0x0000FB50,r) + PI_DIV_4;
+	} else {
+		r = fix16_div( (inX + abs_inY), (abs_inY - inX));
+		r_3 = fix16_mul(fix16_mul(r, r),r);
+		angle = fix16_mul(0x00003240 , r_3) - fix16_mul(0x0000FB50,r) + THREE_PI_DIV_4;
 	}
-	is = (is * i);
-	js = (js * j);
-	#ifndef FIXMATH_NO_ROUNDING
-	is += (fix16_one >> 1);
-	js += (fix16_one >> 1);
-	#endif
-	is >>= 16;
-	js >>= 16;
-	is = is * 51472LL;
-	angle += (is / js) << 14;
-	angle += (inX >= 0 ? 3373259426LL : 10119778278LL);
-	#ifndef FIXMATH_NO_ROUNDING
-	angle += (fix16_one >> 1);
-	#endif
-	angle >>= 16;
-	#else
-    fix16_t angle;
-    if(inX >= 0) {
-        fix16_t r = fix16_sdiv(fix16_sadd(inX, -absy),
-                fix16_sadd(inX, absy));
-        angle = fix16_sadd(fix16_sadd(
-                    fix16_mul(12864, fix16_mul(r, fix16_mul(r, r))),
-                    fix16_mul(-64336, r)),
-                51471); // pi/4
-    } else {
-        fix16_t r = fix16_sdiv(fix16_sadd(inX, absy),
-                fix16_sadd(absy, -inX));
-        angle = fix16_sadd(fix16_sadd(
-                    fix16_mul(12864, fix16_mul(r, fix16_mul(r, r))),
-                    fix16_mul(-64336, r)),
-                154415); // 3pi/4
-    }
-	#endif
-	angle = (inY < 0 ? -angle : angle);
+	if (inY < 0)
+	{
+		angle = -angle;
+	}
 
 	#ifndef FIXMATH_NO_CACHE
 	_fix16_atan_cache_index[0][hash] = inX;
