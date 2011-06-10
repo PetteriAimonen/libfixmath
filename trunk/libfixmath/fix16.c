@@ -116,6 +116,7 @@ fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) {
 	uint32_t n_lo = (inArg0 % inArg1);
 	uint32_t n_hi = (n_lo >> 16);
 	n_lo <<= 16;
+	uint32_t n_lo_orig = n_lo;
 
 	uint32_t i, arg;
 	for(i = 1, arg = inArg1; ((n_lo | arg) & 1) == 0; i <<= 1) {
@@ -123,6 +124,7 @@ fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) {
 		n_hi =  (n_hi >> 1);
 		arg >>= 1;
 	}
+	n_lo = n_lo_orig;
 
 	uint32_t res = 0;
 	if(n_hi) {
