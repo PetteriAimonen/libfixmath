@@ -7,7 +7,38 @@ fix16_t _fix16_sqrt_cache_index[4096] = { 0 };
 fix16_t _fix16_sqrt_cache_value[4096] = { 0 };
 #endif
 
+fix16_t fix16_sqrt32(fix16_t inValue)
+{
+	fix16_t retval = 0;
+	fix16_t x = inValue;
 
+	/* Take only  Leading 1 bit */
+	x |= (x >> 1);
+	x |= (x >> 2);
+	x |= (x >> 4);
+	x |= (x >> 8);
+	x |= (x >> 16);
+	x = x & ~(x >> 1);
+
+	/* Avoid useless loops */
+	if (x & 0xFF000000)
+	{
+		x = 0x00800000;
+	}
+	/* Condition for numbers less than 1.0 */
+	if ( !(inValue>>16) ) x = 0x00008000;
+
+	while(x)
+	{
+		retval |= x;
+		if ( (uint32_t)fix16_mul(retval,retval) > (uint32_t)inValue)
+		{
+			retval &= ~x;
+		}
+		x >>= 1;
+	}
+	return retval;
+}
 
 fix16_t fix16_sqrt(fix16_t inValue) {
 	int neg = (inValue < 0);
