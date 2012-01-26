@@ -1,76 +1,83 @@
 #include "fix16.h"
-#include "int64.h"
 
-
-#ifndef FIXMATH_NO_CACHE
-fix16_t _fix16_sqrt_cache_index[4096] = { 0 };
-fix16_t _fix16_sqrt_cache_value[4096] = { 0 };
-#endif
-
-fix16_t fix16_sqrt32(fix16_t inValue)
-{
-	fix16_t retval = 0;
-	fix16_t x = inValue;
-
-	/* Take only  Leading 1 bit */
-	x |= (x >> 1);
-	x |= (x >> 2);
-	x |= (x >> 4);
-	x |= (x >> 8);
-	x |= (x >> 16);
-	x = x & ~(x >> 1);
-
-	/* Avoid useless loops */
-	if (x & 0xFF000000)
-	{
-		x = 0x00800000;
-	}
-	/* Condition for numbers less than 1.0 */
-	if ( !(inValue>>16) ) x = 0x00008000;
-
-	while(x)
-	{
-		retval |= x;
-		if ( (uint32_t)fix16_mul(retval,retval) > (uint32_t)inValue)
-		{
-			retval &= ~x;
-		}
-		x >>= 1;
-	}
-	return retval;
-}
-
+/* The square root algorithm is quite directly from
+ * http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Binary_numeral_system_.28base_2.29
+ * An important difference is that it is split to two parts
+ * in order to use only 32-bit operations.
+ *
+ * Note that for negative numbers we return -sqrt(-inValue).
+ * Not sure if someone relies on this behaviour, but not going
+ * to break it for now. It doesn't slow the code much overall.
+ */
 fix16_t fix16_sqrt(fix16_t inValue) {
-	int neg = (inValue < 0);
-	if(neg)
-		inValue = -inValue;
+  uint8_t neg = (inValue < 0);
+  uint32_t num = (neg ? -inValue : inValue);
+  uint32_t result = 0;
+  uint32_t bit;
+  uint8_t n;
+  
+  // Many numbers will be less than 15, so
+  // this gives a good balance between time spent
+  // in if vs. time spent in the while loop
+  // when searching for the starting value.
+  if (num & 0xFFF00000)
+    bit = (uint32_t)1 << 30;
+  else
+    bit = (uint32_t)1 << 18;
+  
+  while (bit > num) bit >>= 2;
+  
+  // The main part is executed twice, in order to avoid
+  // using 64 bit values in computations.
+  for (n = 0; n < 2; n++)
+  {
+    // First we get the top 24 bits of the answer.
+    while (bit)
+    {
+      if (num >= result + bit)
+      {
+        num -= result + bit;
+        result = (result >> 1) + bit;
+      }
+      else
+      {
+        result = (result >> 1);
+      }
+      bit >>= 2;
+    }
+    
+    if (n == 0)
+    {
+      // Then process it again to get the lowest 8 bits.
+      if (num > 65535)
+      {
+        // The remainder 'num' is too large to be shifted left
+        // by 16, so we have to add 1 to result manually and
+        // adjust 'num' accordingly.
+        // num = a - (result + 0.5)^2
+        //   = num + result^2 - (result + 0.5)^2
+        //   = num - result - 0.5
+        num -= result;
+        num = (num << 16) - 0x8000;
+        result = (result << 16) + 0x8000;
+      }
+      else
+      {
+        num <<= 16;
+        result <<= 16;
+      }
+      
+      bit = 1 << 14;
+    }
+  }
 
-	#ifndef FIXMATH_NO_CACHE
-	fix16_t tempIndex = (((inValue >> 16) ^ (inValue >> 4)) & 0x00000FFF);
-	if(_fix16_sqrt_cache_index[tempIndex] == inValue)
-		return (neg ? -_fix16_sqrt_cache_value[tempIndex] : _fix16_sqrt_cache_value[tempIndex]);
-	#endif
-
-	int64_t tempOp  = int64_const((inValue >> 16), (inValue << 16));
-	int64_t tempOut = int64_const(0, 0);
-	int64_t tempOne = int64_const(0x40000000UL, 0x00000000UL);
-
-	while(int64_cmp_gt(tempOne, tempOp))
-		tempOne = int64_shift(tempOne, -2);
-
-	while(int64_cmp_ne(tempOne, int64_const(0, 0))) {
-		if(int64_cmp_ge(tempOp, int64_add(tempOut, tempOne))) {
-			tempOp  = int64_sub(tempOp, int64_add(tempOut, tempOne));
-			tempOut = int64_add(tempOut, int64_shift(tempOne, 1));
-		}
-		tempOut = int64_shift(tempOut, -1);
-		tempOne = int64_shift(tempOne, -2);
-	}
-
-	#ifndef FIXMATH_NO_CACHE
-	_fix16_sqrt_cache_index[tempIndex] = inValue;
-	_fix16_sqrt_cache_value[tempIndex] = int64_lo(tempOut);
-	#endif
-
-	return (neg ? -int64_lo(tempOut) : int64_lo(tempOut));
+#ifndef FIXMATH_NO_ROUNDING
+  // Finally, if next bit would have been 1, round the result upwards.
+  if (num > result)
+  {
+    result++;
+  }
+#endif
+  
+  return (neg ? -result : result);
 }

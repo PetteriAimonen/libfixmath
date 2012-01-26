@@ -18,65 +18,83 @@ static const fix16_t THREE_PI_DIV_4 = 0x00025B2F;       /*!< Fix16 value of 3PI/
 
 static const fix16_t fix16_max = 0x7FFFFFFF; /*!< the maximum value of fix16_t */
 static const fix16_t fix16_min = 0x80000000; /*!< the minimum value of fix16_t */
+static const fix16_t fix16_overflow = 0x80000000; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
 
 static const fix16_t fix16_pi  = 205887;     /*!< fix16_t value of pi */
 static const fix16_t fix16_e   = 178145;     /*!< fix16_t value of e */
 static const fix16_t fix16_one = 0x00010000; /*!< fix16_t value of 1 */
 
+/* Conversion functions between fix16_t and float/integer.
+ * These are inlined to allow compiler to optimize away constant numbers
+ */
+static inline fix16_t fix16_from_int(int a) { return a * fix16_one; }
+static inline float fix16_to_float(fix16_t a) { return (float)a / fix16_one; }
+static inline double fix16_to_dbl(fix16_t a) { return (double)a / fix16_one; }
+
+static inline int fix16_to_int(fix16_t a)
+{
 #ifdef FIXMATH_NO_ROUNDING
-/*! Converts a double to a fix16_t and returns the result. */
-static inline fix16_t fix16_from_dbl(const double inVal)  { return (fix16_t)(inVal * 65536.0); }
-/*! Converts a float to a fix16_t and returns the result. */
-static inline fix16_t fix16_from_float(const float inVal) { return (fix16_t)(inVal * 65536.0f); }
+    return a >> 16;
 #else
-/*! Converts a double to a fix16_t and returns the result. */
-static inline fix16_t fix16_from_dbl(const double inVal)  { return (fix16_t)((inVal * 65536.0) + 0.5); }
-/*! Converts a float to a fix16_t and returns the result. */
-static inline fix16_t fix16_from_float(const float inVal) { return (fix16_t)((inVal * 65536.0f) + 0.5f); }
+    if (a >= 0)
+        return (a + fix16_one / 2) / fix16_one;
+    else
+        return (a - fix16_one / 2) / fix16_one;
 #endif
-/*! Converts a signed integer to a fix16_t and returns the result. */
-static inline fix16_t fix16_from_int(const int32_t inVal) { return (inVal << 16); }
+}
 
-/*! Coverts a fix16_t to a double and returns the result. */
-static inline double  fix16_to_dbl(const fix16_t inVal)   { return ((double)inVal / 65536.0); }
-/*! Converts a fix16_t to a float and returns the result. */
-static inline float   fix16_to_float(const fix16_t inVal) { return ((float)inVal / 65536.0f); }
-/*! Converts a fix16_t to a signed integer and returns the result. */
-static inline int32_t fix16_to_int(const fix16_t inVal)   { return ((inVal + 0x00008000) >> 16); }
+static inline fix16_t fix16_from_float(float a)
+{
+    float temp = a * fix16_one;
+#ifndef FIXMATH_NO_ROUNDING
+    temp += (temp >= 0) ? 0.5f : -0.5f;
+#endif
+    return (fix16_t)temp;
+}
 
+static inline fix16_t fix16_from_dbl(double a)
+{
+    double temp = a * fix16_one;
+#ifndef FIXMATH_NO_ROUNDING
+    temp += (temp >= 0) ? 0.5f : -0.5f;
+#endif
+    return (fix16_t)temp;
+}
 
+/* Subtraction and addition with (optional) overflow detection. */
+#ifdef FIXMATH_NO_OVERFLOW
 
 static inline fix16_t fix16_add(fix16_t inArg0, fix16_t inArg1) { return (inArg0 + inArg1); }
-
-/*! Performs a saturated addition (overflow-protected) of the two given fix16_t's and returns the result.
-*/
-extern fix16_t fix16_sadd(fix16_t inArg0, fix16_t inArg1);
-
 static inline fix16_t fix16_sub(fix16_t inArg0, fix16_t inArg1) { return (inArg0 - inArg1); }
 
-static inline fix16_t fix16_ssub(fix16_t inArg0, fix16_t inArg1) { return fix16_sadd(inArg0, -inArg1);}
+#else
 
+extern fix16_t fix16_add(fix16_t a, fix16_t b);
+extern fix16_t fix16_sub(fix16_t a, fix16_t b);
 
+/* Saturating arithmetic */
+extern fix16_t fix16_sadd(fix16_t a, fix16_t b);
+extern fix16_t fix16_ssub(fix16_t a, fix16_t b);
+
+#endif
 
 /*! Multiplies the two given fix16_t's and returns the result.
 */
 extern fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1);
 
-/*! Performs a saturated multiplication (overflow-protected) of the two given fix16_t's and returns the result.
-*/
-extern fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1);
-
-
-
 /*! Divides the first given fix16_t by the second and returns the result.
 */
 extern fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1);
 
+#ifndef FIXMATH_NO_OVERFLOW
+/*! Performs a saturated multiplication (overflow-protected) of the two given fix16_t's and returns the result.
+*/
+extern fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1);
+
 /*! Performs a saturated division (overflow-protected) of the first fix16_t by the second and returns the result.
 */
 extern fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1);
-
-
+#endif
 
 /*! Returns the linear interpolation: (inArg0 * (1 - inFract)) + (inArg1 * inFract)
 */
