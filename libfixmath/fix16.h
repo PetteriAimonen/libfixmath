@@ -6,6 +6,17 @@ extern "C"
 {
 #endif
 
+/* These options may let the optimizer to remove some calls to the functions.
+ * Refer to http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html
+ */
+#ifndef FIXMATH_FUNC_ATTRS
+# ifdef __GNUC__
+#   define FIXMATH_FUNC_ATTRS __attribute__((leaf, nothrow, pure))
+# else
+#   define FIXMATH_FUNC_ATTRS
+# endif
+#endif
+
 #include <stdint.h>
 
 typedef int32_t fix16_t;
@@ -69,84 +80,84 @@ static inline fix16_t fix16_sub(fix16_t inArg0, fix16_t inArg1) { return (inArg0
 
 #else
 
-extern fix16_t fix16_add(fix16_t a, fix16_t b);
-extern fix16_t fix16_sub(fix16_t a, fix16_t b);
+extern fix16_t fix16_add(fix16_t a, fix16_t b) FIXMATH_FUNC_ATTRS;
+extern fix16_t fix16_sub(fix16_t a, fix16_t b) FIXMATH_FUNC_ATTRS;
 
 /* Saturating arithmetic */
-extern fix16_t fix16_sadd(fix16_t a, fix16_t b);
-extern fix16_t fix16_ssub(fix16_t a, fix16_t b);
+extern fix16_t fix16_sadd(fix16_t a, fix16_t b) FIXMATH_FUNC_ATTRS;
+extern fix16_t fix16_ssub(fix16_t a, fix16_t b) FIXMATH_FUNC_ATTRS;
 
 #endif
 
 /*! Multiplies the two given fix16_t's and returns the result.
 */
-extern fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1);
+extern fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1) FIXMATH_FUNC_ATTRS;
 
 /*! Divides the first given fix16_t by the second and returns the result.
 */
-extern fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1);
+extern fix16_t fix16_div(fix16_t inArg0, fix16_t inArg1) FIXMATH_FUNC_ATTRS;
 
 #ifndef FIXMATH_NO_OVERFLOW
 /*! Performs a saturated multiplication (overflow-protected) of the two given fix16_t's and returns the result.
 */
-extern fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1);
+extern fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1) FIXMATH_FUNC_ATTRS;
 
 /*! Performs a saturated division (overflow-protected) of the first fix16_t by the second and returns the result.
 */
-extern fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1);
+extern fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) FIXMATH_FUNC_ATTRS;
 #endif
 
 /*! Returns the linear interpolation: (inArg0 * (1 - inFract)) + (inArg1 * inFract)
 */
-extern fix16_t fix16_lerp8(fix16_t inArg0, fix16_t inArg1, uint8_t inFract);
-extern fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract);
+extern fix16_t fix16_lerp8(fix16_t inArg0, fix16_t inArg1, uint8_t inFract) FIXMATH_FUNC_ATTRS;
+extern fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract) FIXMATH_FUNC_ATTRS;
 #ifndef FIXMATH_NO_64BIT
-extern fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract);
+extern fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract) FIXMATH_FUNC_ATTRS;
 #endif
 
 /*! Returns the sine of the given fix16_t.
 */
-extern fix16_t fix16_sin_parabola(fix16_t inAngle);
+extern fix16_t fix16_sin_parabola(fix16_t inAngle) FIXMATH_FUNC_ATTRS;
 
 /*! Returns the sine of the given fix16_t.
 */
-extern fix16_t fix16_sin(fix16_t inAngle);
+extern fix16_t fix16_sin(fix16_t inAngle) FIXMATH_FUNC_ATTRS;
 
 /*! Returns the cosine of the given fix16_t.
 */
-extern fix16_t fix16_cos(fix16_t inAngle);
+extern fix16_t fix16_cos(fix16_t inAngle) FIXMATH_FUNC_ATTRS;
 
 /*! Returns the tangent of the given fix16_t.
 */
-extern fix16_t fix16_tan(fix16_t inAngle);
+extern fix16_t fix16_tan(fix16_t inAngle) FIXMATH_FUNC_ATTRS;
 
 /*! Returns the arcsine of the given fix16_t.
 */
-extern fix16_t fix16_asin(fix16_t inValue);
+extern fix16_t fix16_asin(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 
 /*! Returns the arccosine of the given fix16_t.
 */
-extern fix16_t fix16_acos(fix16_t inValue);
+extern fix16_t fix16_acos(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 
 /*! Returns the arctangent of the given fix16_t.
 */
-extern fix16_t fix16_atan(fix16_t inValue);
+extern fix16_t fix16_atan(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 
 /*! Returns the arctangent of inY/inX.
 */
-extern fix16_t fix16_atan2(fix16_t inY, fix16_t inX);
+extern fix16_t fix16_atan2(fix16_t inY, fix16_t inX) FIXMATH_FUNC_ATTRS;
 
 
 
 /*! Returns the square root of the given fix16_t.
 */
-extern fix16_t fix16_sqrt(fix16_t inValue);
+extern fix16_t fix16_sqrt(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 
 
 
 /*! Returns the exponent (e^) of the given fix16_t.
 */
-extern fix16_t fix16_exp(fix16_t inValue);
+extern fix16_t fix16_exp(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 
 #ifdef __cplusplus
 }
