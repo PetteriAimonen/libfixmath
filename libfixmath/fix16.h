@@ -159,6 +159,10 @@ extern fix16_t fix16_sqrt(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 */
 extern fix16_t fix16_exp(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 
+/*! Returns the natural logarithm of the given fix16_t.
+ */
+extern fix16_t fix16_log(fix16_t inValue) FIXMATH_FUNC_ATTRS;
+
 #ifdef __cplusplus
 }
 #include "fix16.hpp"
