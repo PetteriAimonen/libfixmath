@@ -11,11 +11,10 @@ extern "C"
  */
 #ifndef FIXMATH_FUNC_ATTRS
 # ifdef __GNUC__
-#   ifdef AVR
-      // avr-gcc uselessly warns about "leaf".
-#     define FIXMATH_FUNC_ATTRS __attribute__((nothrow, pure))
-#   else
+#   if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 6)
 #     define FIXMATH_FUNC_ATTRS __attribute__((leaf, nothrow, pure))
+#   else
+#     define FIXMATH_FUNC_ATTRS __attribute__((nothrow, pure))
 #   endif
 # else
 #   define FIXMATH_FUNC_ATTRS
