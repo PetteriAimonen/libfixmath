@@ -12,10 +12,10 @@ class Fix16 {
 		Fix16(const double inValue)  { value = fix16_from_dbl(inValue);   }
 		Fix16(const int16_t inValue) { value = fix16_from_int(inValue);   }
 
-		operator fix16_t() { return value;                 }
-		operator double()  { return fix16_to_dbl(value);   }
-		operator float()   { return fix16_to_float(value); }
-		operator int16_t() { return fix16_to_int(value);   }
+		operator fix16_t() const { return value;                 }
+		operator double()  const { return fix16_to_dbl(value);   }
+		operator float()   const { return fix16_to_float(value); }
+		operator int16_t() const { return fix16_to_int(value);   }
 
 		Fix16 & operator=(const Fix16 &rhs)  { value = rhs.value;             return *this; }
 		Fix16 & operator=(const fix16_t rhs) { value = rhs;                   return *this; }
