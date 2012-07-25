@@ -31,8 +31,8 @@ static const fix16_t X4_CORRECTION_COMPONENT = 0x399A; 	/*!< Fix16 value of 0.22
 static const fix16_t PI_DIV_4 = 0x0000C90F;             /*!< Fix16 value of PI/4 */
 static const fix16_t THREE_PI_DIV_4 = 0x00025B2F;       /*!< Fix16 value of 3PI/4 */
 
-static const fix16_t fix16_max = 0x7FFFFFFF; /*!< the maximum value of fix16_t */
-static const fix16_t fix16_min = 0x80000000; /*!< the minimum value of fix16_t */
+static const fix16_t fix16_max      = 0x7FFFFFFF; /*!< the maximum value of fix16_t */
+static const fix16_t fix16_min      = 0x80000000; /*!< the minimum value of fix16_t */
 static const fix16_t fix16_overflow = 0x80000000; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
 
 static const fix16_t fix16_pi  = 205887;     /*!< fix16_t value of pi */
@@ -42,38 +42,37 @@ static const fix16_t fix16_one = 0x00010000; /*!< fix16_t value of 1 */
 /* Conversion functions between fix16_t and float/integer.
  * These are inlined to allow compiler to optimize away constant numbers
  */
-static inline fix16_t fix16_from_int(int a) { return a * fix16_one; }
-static inline float fix16_to_float(fix16_t a) { return (float)a / fix16_one; }
-static inline double fix16_to_dbl(fix16_t a) { return (double)a / fix16_one; }
+static inline fix16_t fix16_from_int(int a)     { return a * fix16_one; }
+static inline float   fix16_to_float(fix16_t a) { return (float)a / fix16_one; }
+static inline double  fix16_to_dbl(fix16_t a)   { return (double)a / fix16_one; }
 
 static inline int fix16_to_int(fix16_t a)
 {
 #ifdef FIXMATH_NO_ROUNDING
-    return a >> 16;
+    return (a >> 16);
 #else
-    if (a >= 0)
-        return (a + fix16_one / 2) / fix16_one;
-    else
-        return (a - fix16_one / 2) / fix16_one;
+	if (a >= 0)
+		return (a + (fix16_one >> 1)) / fix16_one;
+	return (a - (fix16_one >> 1)) / fix16_one;
 #endif
 }
 
 static inline fix16_t fix16_from_float(float a)
 {
-    float temp = a * fix16_one;
+	float temp = a * fix16_one;
 #ifndef FIXMATH_NO_ROUNDING
-    temp += (temp >= 0) ? 0.5f : -0.5f;
+	temp += (temp >= 0) ? 0.5f : -0.5f;
 #endif
-    return (fix16_t)temp;
+	return (fix16_t)temp;
 }
 
 static inline fix16_t fix16_from_dbl(double a)
 {
-    double temp = a * fix16_one;
+	double temp = a * fix16_one;
 #ifndef FIXMATH_NO_ROUNDING
-    temp += (temp >= 0) ? 0.5f : -0.5f;
+	temp += (temp >= 0) ? 0.5f : -0.5f;
 #endif
-    return (fix16_t)temp;
+	return (fix16_t)temp;
 }
 
 /* Subtraction and addition with (optional) overflow detection. */
@@ -111,6 +110,12 @@ extern fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1) FIXMATH_FUNC_ATTRS;
 extern fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) FIXMATH_FUNC_ATTRS;
 #endif
 
+/*! Divides the first given fix16_t by the second and returns the result.
+*/
+extern fix16_t fix16_mod(fix16_t x, fix16_t y) FIXMATH_FUNC_ATTRS;
+
+
+
 /*! Returns the linear interpolation: (inArg0 * (1 - inFract)) + (inArg1 * inFract)
 */
 extern fix16_t fix16_lerp8(fix16_t inArg0, fix16_t inArg1, uint8_t inFract) FIXMATH_FUNC_ATTRS;
@@ -118,6 +123,8 @@ extern fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract) FI
 #ifndef FIXMATH_NO_64BIT
 extern fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract) FIXMATH_FUNC_ATTRS;
 #endif
+
+
 
 /*! Returns the sine of the given fix16_t.
 */
@@ -150,6 +157,14 @@ extern fix16_t fix16_atan(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 /*! Returns the arctangent of inY/inX.
 */
 extern fix16_t fix16_atan2(fix16_t inY, fix16_t inX) FIXMATH_FUNC_ATTRS;
+
+static const fix16_t fix16_rad_to_deg_mult = 3754936;
+static inline fix16_t fix16_rad_to_deg(fix16_t radians)
+	{ return fix16_mul(radians, fix16_rad_to_deg_mult); }
+
+static const fix16_t fix16_deg_to_rad_mult = 1144;
+static inline fix16_t fix16_deg_to_rad(fix16_t degrees)
+	{ return fix16_mul(degrees, fix16_deg_to_rad_mult); }
 
 
 
