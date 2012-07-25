@@ -190,7 +190,7 @@ Suffixes must be used for the various types:
 Enums must always be typedef'd.
 Enum values must be prefixed by the enum name.
 Structs which rely on ordering must use __attribute__((__packed__)).
-
+Unions must use __attribute__((__packed__)).
 Bitfields:
 	- must always use __attribute__((__packed__)).
 	- must always follow the GCC rules regarding bitfields.
@@ -212,6 +212,7 @@ Examples:
 	typedef struct vector_s vector_t;
 2:
 	union types_u
+	__attribute__((__packed__))
 	{
 		int      i;
 		unsigned u;
@@ -227,3 +228,37 @@ Examples:
 		unsigned reserved : 2;
 		unsigned alpha    : 4;
 	} img_desc_t;
+
+
+
+11.0 - MACROS
+
+Macros should only be used for condtional compilation and header protection
+where this is possible.
+For function like macros static inline functions should be defined.
+For variable like macros static const variables should be defined.
+For enums the enum type should always be used.
+
+Examples:
+0:
+	static const unsigned max(unsigned x, unsigned y)
+		{ return (x > y ? x : y); }
+1:
+	static const float pi = 3.14152f;
+2:
+	typedef enum
+	{
+		fuzzy_no = 0,
+		fuzzy_yes,
+		fuzzy_maybe,
+	} fuzzy_e;
+
+Counter-examples:
+0:
+	#define MAX(x, y) ((x) > (y) ? (x) : (y))
+1:
+	#define PI 3.14152
+2:
+	#define FUZZY_NO    0
+	#define FUZZY_YES   1
+	#define FUZZY_MAYBE 2
