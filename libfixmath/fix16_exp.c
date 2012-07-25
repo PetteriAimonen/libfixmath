@@ -6,6 +6,8 @@ static fix16_t _fix16_exp_cache_index[4096]  = { 0 };
 static fix16_t _fix16_exp_cache_value[4096]  = { 0 };
 #endif
 
+
+
 fix16_t fix16_exp(fix16_t inValue) {
 	if(inValue == 0)
 		return fix16_one;
@@ -60,6 +62,8 @@ fix16_t fix16_exp(fix16_t inValue) {
 	return result;
 }
 
+
+
 fix16_t fix16_log(fix16_t inValue)
 {
     fix16_t guess = fix16_from_int(2);
@@ -78,7 +82,7 @@ fix16_t fix16_log(fix16_t inValue)
         scaling += 4;
     }
     
-    while (inValue < fix16_from_int(1))
+    while (inValue < fix16_one)
     {
         inValue = fix16_mul(inValue, e_to_fourth);
         scaling -= 4;
@@ -97,9 +101,104 @@ fix16_t fix16_log(fix16_t inValue)
             delta = fix16_from_int(3);
         
         guess += delta;
-    } while (count++ < 10 && (delta > 1 || delta < -1));
+    } while ((count++ < 10)
+		&& ((delta > 1) || (delta < -1)));
     
     return guess + fix16_from_int(scaling);
 }
 
 
+
+static inline fix16_t fix16_rs(fix16_t x)
+{
+	#ifdef FIXMATH_NO_ROUNDING
+		return (x >> 1);
+	#else
+		fix16_t y = (x >> 1) + (x & 1);
+		return y;
+	#endif
+}
+
+/**
+ * This assumes that the input value is >= 1.
+ * 
+ * Note that this is only ever called with inValue >= 1 (because it has a wrapper to check. 
+ * As such, the result is always less than the input. 
+ */
+static fix16_t fix16__log2_inner(fix16_t x)
+{
+	fix16_t result = 0;
+	
+	while(x >= fix16_from_int(2))
+	{
+		result++;
+		x = fix16_rs(x);
+	}
+
+	if(x == 0) return (result << 16);
+
+	uint_fast8_t i;
+	for(i = 16; i > 0; i--)
+	{
+		x = fix16_mul(x, x);
+		result <<= 1;
+		if(x >= fix16_from_int(2))
+		{
+			result |= 1;
+			x = fix16_rs(x);
+		}
+	}
+	#ifndef FIXMATH_NO_ROUNDING
+		x = fix16_mul(x, x);
+		if(x >= fix16_from_int(2)) result++;
+	#endif
+	
+	return result;
+}
+
+
+
+/**
+ * calculates the log base 2 of input.
+ * Note that negative inputs are invalid! (will return fix16_overflow, since there are no exceptions)
+ * 
+ * i.e. 2 to the power output = input.
+ * It's equivalent to the log or ln functions, except it uses base 2 instead of base 10 or base e.
+ * This is useful as binary things like this are easy for binary devices, like modern microprocessros, to calculate.
+ * 
+ * This can be used as a helper function to calculate powers with non-integer powers and/or bases.
+ */
+fix16_t fix16_log2(fix16_t x)
+{
+	// Note that a negative x gives a non-real result.
+	// If x == 0, the limit of log2(x)  as x -> 0 = -infinity.
+	// log2(-ve) gives a complex result.
+	if (x <= 0) return fix16_overflow;
+
+	// If the input is less than one, the result is -log2(1.0 / in)
+	if (x < fix16_one)
+	{
+		// Note that the inverse of this would overflow.
+		// This is the exact answer for log2(1.0 / 65536)
+		if (x == 1) return fix16_from_int(-16);
+
+		fix16_t inverse = fix16_div(fix16_one, x);
+		return -fix16__log2_inner(inverse);
+	}
+
+	// If input >= 1, just proceed as normal.
+	// Note that x == fix16_one is a special case, where the answer is 0.
+	return fix16__log2_inner(x);
+}
+
+/**
+ * This is a wrapper for fix16_log2 which implements saturation arithmetic.
+ */
+fix16_t fix16_slog2(fix16_t x)
+{
+	fix16_t retval = fix16_log2(x);
+	// The only overflow possible is when the input is negative.
+	if(retval == fix16_overflow)
+		return fix16_min;
+	return retval;
+}
