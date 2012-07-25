@@ -40,7 +40,7 @@ fix16_t fix16_sadd(fix16_t a, fix16_t b)
 	fix16_t result = fix16_add(a, b);
 
 	if (result == fix16_overflow)
-		return (a > 0) ? fix16_max : fix16_min;
+		return (a > 0) ? fix16_maximum : fix16_minimum;
 
 	return result;
 }	
@@ -50,7 +50,7 @@ fix16_t fix16_ssub(fix16_t a, fix16_t b)
 	fix16_t result = fix16_sub(a, b);
 
 	if (result == fix16_overflow)
-		return (a > 0) ? fix16_max : fix16_min;
+		return (a > 0) ? fix16_maximum : fix16_minimum;
 
 	return result;
 }
@@ -259,9 +259,9 @@ fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1)
 	if (result == fix16_overflow)
 	{
 		if ((inArg0 >= 0) == (inArg1 >= 0))
-			return fix16_max;
+			return fix16_maximum;
 		else
-			return fix16_min;
+			return fix16_minimum;
 	}
 	
 	return result;
@@ -293,7 +293,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	// computed all the bits in (a<<17)/b. Usually this takes 1-3 iterations.
 	
 	if (b == 0)
-			return fix16_min;
+			return fix16_minimum;
 	
 	uint32_t remainder = (a >= 0) ? a : (-a);
 	uint32_t divider = (b >= 0) ? b : (-b);
@@ -349,7 +349,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	if ((a ^ b) & 0x80000000)
 	{
 		#ifndef FIXMATH_NO_OVERFLOW
-		if (result == fix16_min)
+		if (result == fix16_minimum)
 				return fix16_overflow;
 		#endif
 		
@@ -373,7 +373,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	// platforms without hardware divide.
 	
 	if (b == 0)
-		return fix16_min;
+		return fix16_minimum;
 	
 	uint32_t remainder = (a >= 0) ? a : (-a);
 	uint32_t divider = (b >= 0) ? b : (-b);
@@ -432,7 +432,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	if ((a ^ b) & 0x80000000)
 	{
 		#ifndef FIXMATH_NO_OVERFLOW
-		if (result == fix16_min)
+		if (result == fix16_minimum)
 				return fix16_overflow;
 		#endif
 		
@@ -452,9 +452,9 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1)
 	if (result == fix16_overflow)
 	{
 		if ((inArg0 >= 0) == (inArg1 >= 0))
-			return fix16_max;
+			return fix16_maximum;
 		else
-			return fix16_min;
+			return fix16_minimum;
 	}
 	
 	return result;

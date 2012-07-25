@@ -31,8 +31,8 @@ static const fix16_t X4_CORRECTION_COMPONENT = 0x399A; 	/*!< Fix16 value of 0.22
 static const fix16_t PI_DIV_4 = 0x0000C90F;             /*!< Fix16 value of PI/4 */
 static const fix16_t THREE_PI_DIV_4 = 0x00025B2F;       /*!< Fix16 value of 3PI/4 */
 
-static const fix16_t fix16_max      = 0x7FFFFFFF; /*!< the maximum value of fix16_t */
-static const fix16_t fix16_min      = 0x80000000; /*!< the minimum value of fix16_t */
+static const fix16_t fix16_maximum  = 0x7FFFFFFF; /*!< the maximum value of fix16_t */
+static const fix16_t fix16_minimum  = 0x80000000; /*!< the minimum value of fix16_t */
 static const fix16_t fix16_overflow = 0x80000000; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
 
 static const fix16_t fix16_pi  = 205887;     /*!< fix16_t value of pi */
@@ -74,6 +74,21 @@ static inline fix16_t fix16_from_dbl(double a)
 #endif
 	return (fix16_t)temp;
 }
+
+
+
+static inline fix16_t fix16_abs(fix16_t x)
+	{ return (x < 0 ? -x : x); }
+static inline fix16_t fix16_floor(fix16_t x)
+	{ return (x & 0xFFFF0000UL); }
+static inline fix16_t fix16_ceil(fix16_t x)
+	{ return (x & 0xFFFF0000UL) + (x & 0x0000FFFFUL ? fix16_one : 0); }
+static inline fix16_t fix16_min(fix16_t x, fix16_t y)
+	{ return (x < y ? x : y); }
+static inline fix16_t fix16_max(fix16_t x, fix16_t y)
+	{ return (x > y ? x : y); }
+static inline fix16_t fix16_clamp(fix16_t x, fix16_t lo, fix16_t hi)
+	{ return fix16_min(fix16_max(x, lo), hi); }
 
 /* Subtraction and addition with (optional) overflow detection. */
 #ifdef FIXMATH_NO_OVERFLOW
