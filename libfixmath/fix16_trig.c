@@ -44,7 +44,8 @@ fix16_t fix16_sin_parabola(fix16_t inAngle)
 	return retval;
 }
 
-fix16_t fix16_sin(fix16_t inAngle) {
+fix16_t fix16_sin(fix16_t inAngle)
+{
 	fix16_t tempAngle = inAngle % (fix16_pi << 1);
 
 	#ifdef FIXMATH_SIN_LUT
@@ -105,17 +106,22 @@ fix16_t fix16_sin(fix16_t inAngle) {
 	return tempOut;
 }
 
-fix16_t fix16_cos(fix16_t inAngle) {
+fix16_t fix16_cos(fix16_t inAngle)
+{
 	return fix16_sin(inAngle + (fix16_pi >> 1));
 }
 
-fix16_t fix16_tan(fix16_t inAngle) {
+fix16_t fix16_tan(fix16_t inAngle)
+{
 	return fix16_sdiv(fix16_sin(inAngle), fix16_cos(inAngle));
 }
 
-fix16_t fix16_asin(fix16_t inValue) {
-	if((inValue > fix16_one) || (inValue < -fix16_one))
+fix16_t fix16_asin(fix16_t inValue)
+{
+	if((inValue > fix16_one)
+		|| (inValue < -fix16_one))
 		return 0;
+
 	fix16_t tempOut;
 	tempOut = (fix16_one - fix16_mul(inValue, inValue));
 	tempOut = fix16_div(inValue, fix16_sqrt(tempOut));
@@ -123,11 +129,13 @@ fix16_t fix16_asin(fix16_t inValue) {
 	return tempOut;
 }
 
-fix16_t fix16_acos(fix16_t inValue) {
+fix16_t fix16_acos(fix16_t inValue)
+{
 	return ((fix16_pi >> 1) - fix16_asin(inValue));
 }
 
-fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
+fix16_t fix16_atan2(fix16_t inY , fix16_t inX)
+{
 	fix16_t abs_inY, mask, angle, r, r_3;
 
 	#ifndef FIXMATH_NO_CACHE
@@ -166,6 +174,7 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX) {
 	return angle;
 }
 
-fix16_t fix16_atan(fix16_t inValue) {
+fix16_t fix16_atan(fix16_t inValue)
+{
 	return fix16_atan2(inValue, fix16_one);
 }
