@@ -182,6 +182,14 @@ extern fix16_t fix16_exp(fix16_t inValue) FIXMATH_FUNC_ATTRS;
  */
 extern fix16_t fix16_log(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 
+/*! Returns the base 2 logarithm of the given fix16_t.
+ */
+extern fix16_t fix16_log2(fix16_t x) FIXMATH_FUNC_ATTRS;
+
+/*! Returns the saturated base 2 logarithm of the given fix16_t.
+ */
+extern fix16_t fix16_slog2(fix16_t x) FIXMATH_FUNC_ATTRS;
+
 #ifdef __cplusplus
 }
 #include "fix16.hpp"
