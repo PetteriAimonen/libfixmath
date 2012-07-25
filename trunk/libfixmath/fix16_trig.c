@@ -116,22 +116,22 @@ fix16_t fix16_tan(fix16_t inAngle)
 	return fix16_sdiv(fix16_sin(inAngle), fix16_cos(inAngle));
 }
 
-fix16_t fix16_asin(fix16_t inValue)
+fix16_t fix16_asin(fix16_t x)
 {
-	if((inValue > fix16_one)
-		|| (inValue < -fix16_one))
+	if((x > fix16_one)
+		|| (x < -fix16_one))
 		return 0;
 
-	fix16_t tempOut;
-	tempOut = (fix16_one - fix16_mul(inValue, inValue));
-	tempOut = fix16_div(inValue, fix16_sqrt(tempOut));
-	tempOut = fix16_atan(tempOut);
-	return tempOut;
+	fix16_t out;
+	out = (fix16_one - fix16_mul(x, x));
+	out = fix16_div(x, fix16_sqrt(out));
+	out = fix16_atan(out);
+	return out;
 }
 
-fix16_t fix16_acos(fix16_t inValue)
+fix16_t fix16_acos(fix16_t x)
 {
-	return ((fix16_pi >> 1) - fix16_asin(inValue));
+	return ((fix16_pi >> 1) - fix16_asin(x));
 }
 
 fix16_t fix16_atan2(fix16_t inY , fix16_t inX)
@@ -158,7 +158,9 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX)
 	} else {
 		r = fix16_div( (inX + abs_inY), (abs_inY - inX));
 		r_3 = fix16_mul(fix16_mul(r, r),r);
-		angle = fix16_mul(0x00003240 , r_3) - fix16_mul(0x0000FB50,r) + THREE_PI_DIV_4;
+		angle = fix16_mul(0x00003240 , r_3)
+			- fix16_mul(0x0000FB50,r)
+			+ THREE_PI_DIV_4;
 	}
 	if (inY < 0)
 	{
@@ -174,7 +176,7 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX)
 	return angle;
 }
 
-fix16_t fix16_atan(fix16_t inValue)
+fix16_t fix16_atan(fix16_t x)
 {
-	return fix16_atan2(inValue, fix16_one);
+	return fix16_atan2(x, fix16_one);
 }
