@@ -1,0 +1,229 @@
+1.0 - BRACE CONVENTION
+
+Braces always occupy a new line exactly below the opening statement.
+Braces are not expected when the body is a single statement.
+If one part of an if-else construct uses braces then all should,
+even if they're single statements.
+
+Example:
+0:
+	if (condition)
+	{
+		// body
+	}
+	else
+	{
+		// else-body
+	}
+
+1:
+	unsigned max(unsigned x, unsigned y)
+	{
+		if (x > y) return x;
+		return y;
+	}
+
+2:
+	unsigned array[] =
+	{
+		0, 1,
+		2, 3,
+	};
+
+This follows for every use of a brace.
+
+Exceptions:
+0:
+	static inline max(unsigned x, unsigned y)
+		{ return (x > y ? x : y); }
+
+1:
+	unsigned array[] = { 0, 1, 2, 3 };
+
+
+
+2.0 - BRACKET SPACING
+
+All control keywords should have a space between the keyword and the opening bracket.
+Function calls and definitions will never have a space between the name and bracket.
+
+Example:
+0: if (condition)
+1: x = min(a, b);
+
+Counter-example:
+0: if(condition)
+1: x = min (a, b);
+
+
+
+3.0 - OPERATOR SPACING
+
+Binary operators always have a single space either side.
+Unary operators never have a space between them and their value.
+Assignments are treated as binary operators.
+
+Example:
+0: a = b + 5;
+1: a++;
+
+Counter-example:
+0: a=b+5;
+1: a ++;
+
+
+
+4.0 - OPERATOR PRECIDENCE
+
+Where operators with different precidence are used together you must always
+use brackets to make the precidence explicit.
+Never rely on the compilers precidence rules as readers will forget this.
+
+Example:
+0: y = (m * x) + a;
+1: if ((a || b) && c)
+
+Counter-example:
+0: y = m * x + a;
+1: if (a || b && c)
+
+
+
+5.0 - INDENTATION AND WHITESPACE
+
+Tabs must ALWAYS be used for nesting/indentation.
+Spaces must ALWAYS be used for alignment.
+
+Example:
+0:
+	if (condition)
+		return value;
+1:
+	int      mins(int      x, int      y);
+	unsigned minu(unsigned x, unsigned y);
+
+
+
+6.0 - ADVANCED CONTROL FLOW
+
+If the body of an if statement causes the function to return
+or control structure to break then there musn't be an else clause.
+
+Example:
+0:
+	if (condition)
+		return a;
+	return b;
+
+Counter-example:
+0:
+	if (condition)
+		return a;
+	else
+		return b;
+
+
+
+7.0 - LINE WIDTH
+
+A line must not exceed 80 characters wide, this applies universally including
+comments defines, etc.
+
+There are multiple valid points to break a line.
+	- On a binary operator, in which case the binary operator follows on the
+		next line with an indent.
+	- On a function definition/implementation the parameters may go on another
+		line, in which case they are indented. In this case the params should
+		be split sensibly and are aligned by the fact that they're all
+		indented to the same point.
+
+Examples:
+0:
+	some_really_long_variable_name
+		= quite_a_long_value;
+1:
+	if (really_really_really_long_clause_a
+		&& (really_really_really_long_clause_b
+			|| really_really_really_long_clause_c)
+		&& really_really_really_long_clause_d
+		&& really_really_really_long_clause_e)
+2:
+	static inline const unsigned long int really_long_function(
+		unsigned param_a,
+		int      param_b,
+		bool     param_c);
+
+
+
+8.0 - COMMENTS
+
+All comments must use the classic C comment styles and preceed what they're
+commenting on.
+All comments must be in plain english starting with a capital letter
+and finishing with a full stop.
+
+Example:
+0:
+	/* Single line comment about a. */
+	a = 0;
+1:
+	/* Multi-line comment
+	 * about the code below. */
+	a = 0;
+
+
+
+9.0 - LABELS AND GOTO
+
+It is advised quite heavily that you don't use the GOTO keyword and prefer other
+more readable control structures.
+
+
+
+10.0 - STRUCTURES, UNIONS, ENUMS, BITFIELDS and TYPEDEFS
+
+Suffixes must be used for the various types:
+	_s - struct names
+	_u - union names
+	_t - typedef'd struct/union names
+	_e - enums (and typedef'd enums) "_e"
+Enums must always be typedef'd.
+Enum values must be prefixed by the enum name.
+Structs which rely on ordering must use __attribute__((__packed__)).
+
+Bitfields:
+	- must always use __attribute__((__packed__)).
+	- must always follow the GCC rules regarding bitfields.
+		i.e. first field occupies low bits.
+	- field size must be described for every member of a bit-field.
+	- members must never be larger than 32 bits.
+
+Examples:
+0:
+	typedef enum
+	{
+		fuzzy_no = 0,
+		fuzzy_yes,
+		fuzzy_maybe,
+	} fuzzy_e;
+1:
+	struct vector_s
+		{ float x, y, z, w; };
+	typedef struct vector_s vector_t;
+2:
+	union types_u
+	{
+		int      i;
+		unsigned u;
+		float    f;
+		bool     b;
+	};
+	typedef union types_u types_t;
+3:
+	typedef struct
+	{
+		bool     vflip    : 1;
+		bool     hflip    : 1;
+		unsigned reserved : 2;
+		unsigned alpha    : 4;
+	} img_desc_t;
