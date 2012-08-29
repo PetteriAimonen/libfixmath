@@ -12,8 +12,8 @@ int main()
     {
         COMMENT("Testing fix16_exp() corner cases");
         TEST(fix16_exp(0) == fix16_one);
-        TEST(fix16_exp(fix16_min) == 0);
-        TEST(fix16_exp(fix16_max) == fix16_max);
+        TEST(fix16_exp(fix16_minimum) == 0);
+        TEST(fix16_exp(fix16_maximum) == fix16_maximum);
     }
     
     {
@@ -95,7 +95,7 @@ int main()
         int count = 0;
         fix16_t a;
         
-        for (a = 100; a > 0 && a < fix16_max - 7561; a += 7561)
+        for (a = 100; a > 0 && a < fix16_maximum - 7561; a += 7561)
         {
             fix16_t result = fix16_log(a);
             fix16_t resultf = fix16_from_dbl(log(fix16_to_dbl(a)));
