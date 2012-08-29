@@ -208,6 +208,17 @@ extern fix16_t fix16_log2(fix16_t x) FIXMATH_FUNC_ATTRS;
  */
 extern fix16_t fix16_slog2(fix16_t x) FIXMATH_FUNC_ATTRS;
 
+/*! Convert fix16_t value to a string.
+ * Required buffer length for largest values is 13 bytes.
+ */
+extern void fix16_to_str(fix16_t value, char *buf, int decimals);
+
+/*! Convert string to a fix16_t value
+ * Ignores spaces at beginning and end. Returns fix16_overflow if
+ * value is too large or there were garbage characters.
+ */
+extern fix16_t fix16_from_str(const char *buf);
+
 #ifdef __cplusplus
 }
 #include "fix16.hpp"
