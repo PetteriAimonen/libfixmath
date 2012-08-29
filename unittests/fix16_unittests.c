@@ -91,8 +91,8 @@ int main()
         double fb = fix16_to_dbl(b);
         fix16_t fresult = fix16_from_dbl(fa * fb);
         
-        double max = fix16_to_dbl(fix16_max);
-        double min = fix16_to_dbl(fix16_min);
+        double max = fix16_to_dbl(fix16_maximum);
+        double min = fix16_to_dbl(fix16_minimum);
         
         if (delta(fresult, result) > max_delta)
         {
@@ -167,8 +167,8 @@ int main()
         double fb = fix16_to_dbl(b);
         fix16_t fresult = fix16_from_dbl(fa / fb);
         
-        double max = fix16_to_dbl(fix16_max);
-        double min = fix16_to_dbl(fix16_min);        
+        double max = fix16_to_dbl(fix16_maximum);
+        double min = fix16_to_dbl(fix16_minimum);        
         if (delta(fresult, result) > max_delta)
         {
           if (fa / fb > max || fa / fb < min)
@@ -212,8 +212,8 @@ int main()
         double fb = fix16_to_dbl(b);
         fix16_t fresult = fix16_from_dbl(fa + fb);
         
-        double max = fix16_to_dbl(fix16_max);
-        double min = fix16_to_dbl(fix16_min);
+        double max = fix16_to_dbl(fix16_maximum);
+        double min = fix16_to_dbl(fix16_minimum);
         
         if (delta(fresult, result) > max_delta)
         {
@@ -258,8 +258,8 @@ int main()
         double fb = fix16_to_dbl(b);
         fix16_t fresult = fix16_from_dbl(fa - fb);
         
-        double max = fix16_to_dbl(fix16_max);
-        double min = fix16_to_dbl(fix16_min);
+        double max = fix16_to_dbl(fix16_maximum);
+        double min = fix16_to_dbl(fix16_minimum);
         
         if (delta(fresult, result) > max_delta)
         {
