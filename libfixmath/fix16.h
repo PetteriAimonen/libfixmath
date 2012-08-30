@@ -75,7 +75,16 @@ static inline fix16_t fix16_from_dbl(double a)
 	return (fix16_t)temp;
 }
 
+/* Macro for defining fix16_t constant values.
+   The functions above can't be used from e.g. global variable initializers,
+   and their names are quite long also. This macro is useful for constants
+   springled alongside code, e.g. F16(1.234).
 
+   Note that the argument is evaluated multiple times, and also otherwise
+   you should only use this for constant values. For runtime-conversions,
+   use the functions above.
+*/
+#define F16(x) ((fix16_t)(((x) >= 0) ? ((x) * 65536.0 + 0.5) : ((x) * 65536.0 - 0.5)))
 
 static inline fix16_t fix16_abs(fix16_t x)
 	{ return (x < 0 ? -x : x); }
