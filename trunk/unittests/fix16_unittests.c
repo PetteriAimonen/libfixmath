@@ -171,7 +171,7 @@ int main()
         double min = fix16_to_dbl(fix16_minimum);        
         if (delta(fresult, result) > max_delta)
         {
-          if (fa / fb > max || fa / fb < min)
+          if (((fa / fb) > max) || ((fa / fb) < min))
           {
             #ifndef FIXMATH_NO_OVERFLOW
             if (result != fix16_overflow)
@@ -184,8 +184,8 @@ int main()
             continue;
           }
           
-          printf("\n%d / %d = %d\n", a, b, result);
-          printf("%f / %f = %d\n", fa, fb, fresult);
+          printf("\n%f / %f = %f\n", fix16_to_dbl(a), fix16_to_dbl(b), fix16_to_dbl(fresult));
+          printf("%f / %f = %f\n", fa, fb, (fa / fb));
           failures++;
         }
       }
