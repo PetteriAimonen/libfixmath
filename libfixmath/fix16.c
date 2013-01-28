@@ -40,7 +40,7 @@ fix16_t fix16_sadd(fix16_t a, fix16_t b)
 	fix16_t result = fix16_add(a, b);
 
 	if (result == fix16_overflow)
-		return (a > 0) ? fix16_maximum : fix16_minimum;
+		return (a >= 0) ? fix16_maximum : fix16_minimum;
 
 	return result;
 }	
@@ -50,7 +50,7 @@ fix16_t fix16_ssub(fix16_t a, fix16_t b)
 	fix16_t result = fix16_sub(a, b);
 
 	if (result == fix16_overflow)
-		return (a > 0) ? fix16_maximum : fix16_minimum;
+		return (a >= 0) ? fix16_maximum : fix16_minimum;
 
 	return result;
 }
