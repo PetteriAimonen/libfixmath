@@ -1,6 +1,8 @@
 #ifndef __libfixmath_fix16_hpp__
 #define __libfixmath_fix16_hpp__
 
+#include "fix16.h"
+
 class Fix16 {
 	public:
 		fix16_t value;
@@ -53,11 +55,13 @@ class Fix16 {
 		const Fix16 operator+(const float other) const   { Fix16 ret = *this; ret += other; return ret; }
 		const Fix16 operator+(const int16_t other) const { Fix16 ret = *this; ret += other; return ret; }
 
+#ifndef FIXMATH_NO_OVERFLOW
 		const Fix16 sadd(const Fix16 &other)  const { Fix16 ret = fix16_sadd(value, other.value);             return ret; }
 		const Fix16 sadd(const fix16_t other) const { Fix16 ret = fix16_sadd(value, other);                   return ret; }
 		const Fix16 sadd(const double other)  const { Fix16 ret = fix16_sadd(value, fix16_from_dbl(other));   return ret; }
 		const Fix16 sadd(const float other)   const { Fix16 ret = fix16_sadd(value, fix16_from_float(other)); return ret; }
 		const Fix16 sadd(const int16_t other) const { Fix16 ret = fix16_sadd(value, fix16_from_int(other));   return ret; }
+#endif
 
 		const Fix16 operator-(const Fix16 &other) const  { Fix16 ret = *this; ret -= other; return ret; }
 		const Fix16 operator-(const fix16_t other) const { Fix16 ret = *this; ret -= other; return ret; }
@@ -65,11 +69,13 @@ class Fix16 {
 		const Fix16 operator-(const float other) const   { Fix16 ret = *this; ret -= other; return ret; }
 		const Fix16 operator-(const int16_t other) const { Fix16 ret = *this; ret -= other; return ret; }
 
+#ifndef FIXMATH_NO_OVERFLOW
 		const Fix16 ssub(const Fix16 &other)  const { Fix16 ret = fix16_sadd(value, -other.value);             return ret; }
 		const Fix16 ssub(const fix16_t other) const { Fix16 ret = fix16_sadd(value, -other);                   return ret; }
 		const Fix16 ssub(const double other)  const { Fix16 ret = fix16_sadd(value, -fix16_from_dbl(other));   return ret; }
 		const Fix16 ssub(const float other)   const { Fix16 ret = fix16_sadd(value, -fix16_from_float(other)); return ret; }
 		const Fix16 ssub(const int16_t other) const { Fix16 ret = fix16_sadd(value, -fix16_from_int(other));   return ret; }
+#endif
 
 		const Fix16 operator*(const Fix16 &other) const  { Fix16 ret = *this; ret *= other; return ret; }
 		const Fix16 operator*(const fix16_t other) const { Fix16 ret = *this; ret *= other; return ret; }
@@ -77,11 +83,13 @@ class Fix16 {
 		const Fix16 operator*(const float other) const   { Fix16 ret = *this; ret *= other; return ret; }
 		const Fix16 operator*(const int16_t other) const { Fix16 ret = *this; ret *= other; return ret; }
 
+#ifndef FIXMATH_NO_OVERFLOW
 		const Fix16 smul(const Fix16 &other)  const { Fix16 ret = fix16_smul(value, other.value);             return ret; }
 		const Fix16 smul(const fix16_t other) const { Fix16 ret = fix16_smul(value, other);                   return ret; }
 		const Fix16 smul(const double other)  const { Fix16 ret = fix16_smul(value, fix16_from_dbl(other));   return ret; }
 		const Fix16 smul(const float other)   const { Fix16 ret = fix16_smul(value, fix16_from_float(other)); return ret; }
 		const Fix16 smul(const int16_t other) const { Fix16 ret = fix16_smul(value, fix16_from_int(other));   return ret; }
+#endif
 
 		const Fix16 operator/(const Fix16 &other) const  { Fix16 ret = *this; ret /= other; return ret; }
 		const Fix16 operator/(const fix16_t other) const { Fix16 ret = *this; ret /= other; return ret; }
@@ -89,11 +97,13 @@ class Fix16 {
 		const Fix16 operator/(const float other) const   { Fix16 ret = *this; ret /= other; return ret; }
 		const Fix16 operator/(const int16_t other) const { Fix16 ret = *this; ret /= other; return ret; }
 
+#ifndef FIXMATH_NO_OVERFLOW
 		const Fix16 sdiv(const Fix16 &other)  const { Fix16 ret = fix16_sdiv(value, other.value);             return ret; }
 		const Fix16 sdiv(const fix16_t other) const { Fix16 ret = fix16_sdiv(value, other);                   return ret; }
 		const Fix16 sdiv(const double other)  const { Fix16 ret = fix16_sdiv(value, fix16_from_dbl(other));   return ret; }
 		const Fix16 sdiv(const float other)   const { Fix16 ret = fix16_sdiv(value, fix16_from_float(other)); return ret; }
 		const Fix16 sdiv(const int16_t other) const { Fix16 ret = fix16_sdiv(value, fix16_from_int(other));   return ret; }
+#endif
 
 		const int operator==(const Fix16 &other)  const { return (value == other.value);             }
 		const int operator==(const fix16_t other) const { return (value == other);                   }
