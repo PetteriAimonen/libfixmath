@@ -85,7 +85,7 @@ static void butterfly(fix16_t *real, fix16_t *imag, unsigned blocksize, unsigned
 static uint32_t rbit_32(uint32_t x)
 {
 #if defined(__GNUC__) && defined(__ARM_ARCH_7M__)
-    __asm__("rbit %0,%0" :: "r"(x));
+    __asm__("rbit %0,%0" : "=r"(x) : "0"(x));
     return x;
 #else
     x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
