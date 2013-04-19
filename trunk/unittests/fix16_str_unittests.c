@@ -88,7 +88,7 @@ int main()
             */
             fvalue = round(fvalue * 100000.)/100000.;
         
-            snprintf(goodbuf, 13, "%0.5lf", fvalue);
+            snprintf(goodbuf, 13, "%0.5f", fvalue);
             fix16_to_str(value, testbuf, 5);
             
             if (strcmp(goodbuf, testbuf) != 0)
