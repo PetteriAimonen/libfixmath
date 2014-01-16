@@ -80,5 +80,5 @@ fix16_t fix16_sqrt(fix16_t inValue)
 	}
 #endif
 	
-	return (neg ? -(fix16_t)result : result);
+	return (neg ? -(fix16_t)result : (fix16_t)result);
 }
