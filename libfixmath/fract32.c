@@ -21,7 +21,7 @@ uint32_t fract32_usmul(uint32_t inVal, fract32_t inFract) {
 
 int32_t fract32_smul(int32_t inVal, fract32_t inFract) {
 	if(inVal < 0)
-		return -fract32_usmul(-inVal, inFract);
+        return -(int32_t)fract32_usmul(-inVal, inFract);
 	return fract32_usmul(inVal, inFract);
 }
 #endif
