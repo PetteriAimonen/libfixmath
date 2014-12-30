@@ -65,7 +65,7 @@ static fix16_t delta(fix16_t result, fix16_t expected)
 {
 #ifdef FIXMATH_NO_OVERFLOW
     // Ignore overflow errors when the detection is turned off
-    if (expected == fix16_min)
+    if (expected == fix16_minimum)
         return 0;
 #endif
 
