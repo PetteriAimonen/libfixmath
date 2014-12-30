@@ -228,6 +228,89 @@ extern void fix16_to_str(fix16_t value, char *buf, int decimals);
  */
 extern fix16_t fix16_from_str(const char *buf);
 
+/** Helper macro for F16C. Replace token with its number of characters/digits. */
+#define FIXMATH_TOKLEN(token) ( sizeof( #token ) - 1 )
+
+/** Helper macro for F16C. Handles pow(10, n) for n from 0 to 8. */
+#define FIXMATH_CONSTANT_POW10(times) ( \
+  (times == 0) ? 1ULL \
+        : (times == 1) ? 10ULL \
+            : (times == 2) ? 100ULL \
+                : (times == 3) ? 1000ULL \
+                    : (times == 4) ? 10000ULL \
+                        : (times == 5) ? 100000ULL \
+                            : (times == 6) ? 1000000ULL \
+                                : (times == 7) ? 10000000ULL \
+                                    : 100000000ULL \
+)
+
+
+/** Helper macro for F16C, the type uint64_t is only used at compile time and
+ *  shouldn't be visible in the generated code.
+ *
+ * @note We do not use fix16_one instead of 65536ULL, because the
+ *       "use of a const variable in a constant expression is nonstandard in C".
+ */
+#define FIXMATH_CONVERT_MANTISSA(m) \
+( (unsigned) \
+    ( \
+        ( \
+            ( \
+                (uint64_t)( ( ( 1 ## m ## ULL ) - FIXMATH_CONSTANT_POW10(FIXMATH_TOKLEN(m)) ) * FIXMATH_CONSTANT_POW10(5 - FIXMATH_TOKLEN(m)) ) \
+                * 100000ULL * 65536ULL \
+            ) \
+            + 5000000000ULL /* rounding: + 0.5 */ \
+        ) \
+        / \
+        10000000000LL \
+    ) \
+)
+
+
+#define FIXMATH_COMBINE_I_M(i, m) \
+( \
+    ( \
+        (    i ) \
+        << 16 \
+    ) \
+    | \
+    ( \
+        FIXMATH_CONVERT_MANTISSA(m) \
+        & 0xFFFF \
+    ) \
+)
+
+
+/** Create int16_t (Q16.16) constant from separate integer and mantissa part.
+ *
+ * Only tested on 32-bit ARM Cortex-M0 / x86 Intel.
+ *
+ * This macro is needed when compiling with options like "--fpu=none",
+ * which forbid all and every use of float and related types and
+ * would thus make it impossible to have fix16_t constants.
+ *
+ * Just replace uses of F16() with F16C() like this:
+ *   F16(123.1234) becomes F16C(123,1234)
+ *
+ * @warning Specification of any value outside the mentioned intervals
+ *          WILL result in undefined behavior!
+ *
+ * @note Regardless of the specified minimum and maximum values for i and m below,
+ *       the total value of the number represented by i and m MUST be in the interval
+ *       ]-32768.00000:32767.99999[ else usage with this macro will yield undefined behavior.
+ *
+ * @param i Signed integer constant with a value in the interval ]-32768:32767[.
+ * @param m Positive integer constant in the interval ]0:99999[ (fractional part/mantissa).
+ */
+#define F16C(i, m) \
+( (fix16_t) \
+    ( \
+      (( #i[0] ) == '-') \
+        ? -FIXMATH_COMBINE_I_M((unsigned)( ( (i) * -1) ), m) \
+        : FIXMATH_COMBINE_I_M(i, m) \
+    ) \
+)
+
 #ifdef __cplusplus
 }
 #include "fix16.hpp"

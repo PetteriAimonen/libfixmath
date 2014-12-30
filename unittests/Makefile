@@ -8,7 +8,7 @@ CFLAGS = -g -O0 -I../libfixmath -Wall -Wextra -Werror
 FIX16_SRC = ../libfixmath/fix16.c ../libfixmath/fix16_sqrt.c ../libfixmath/fix16_str.c \
 	../libfixmath/fix16_exp.c ../libfixmath/fix16.h
 
-all: run_fix16_unittests run_fix16_exp_unittests run_fix16_str_unittests
+all: run_fix16_unittests run_fix16_exp_unittests run_fix16_str_unittests run_fix16_macros_unittests
 
 clean:
 	rm -f fix16_unittests_????
@@ -61,5 +61,12 @@ run_fix16_str_unittests: fix16_str_unittests
 	./fix16_str_unittests > /dev/null
 
 fix16_str_unittests: fix16_str_unittests.c $(FIX16_SRC)
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $^ -lm
+
+# Tests for literal macros, run only in default config
+run_fix16_macros_unittests: fix16_macros_unittests
+	./fix16_macros_unittests > /dev/null
+
+fix16_macros_unittests: fix16_macros_unittests.c $(FIX16_SRC)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $^ -lm
 
