@@ -307,7 +307,7 @@ extern fix16_t fix16_from_str(const char *buf);
     ( \
       (( #i[0] ) == '-') \
         ? -FIXMATH_COMBINE_I_M((unsigned)( ( (i) * -1) ), m) \
-        : FIXMATH_COMBINE_I_M(i, m) \
+        : FIXMATH_COMBINE_I_M((unsigned)i, m) \
     ) \
 )
 
