@@ -1,7 +1,11 @@
 {
   "name": "libfixmath",
   "description": "Cross Platform Fixed Point Maths Library",
-  "version": "0.0.0",
+  "keywords": [
+    "fixed",
+    "point",
+    "math"
+  ],
   "repository": {
       "type": "git",
       "url": "https://github.com/PetteriAimonen/libfixmath.git"
