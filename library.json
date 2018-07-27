@@ -11,9 +11,6 @@
       "url": "https://github.com/PetteriAimonen/libfixmath.git"
   },
   "license": "MIT",
-  "export": {
-    "include": "libfixmath"
-  },
   "build": {
     "srcFilter": "+<libfixmath/*>"
   },
