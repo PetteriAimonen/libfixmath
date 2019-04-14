@@ -17,7 +17,7 @@ class Fix16 {
 		operator fix16_t() const { return value;                 }
 		operator double()  const { return fix16_to_dbl(value);   }
 		operator float()   const { return fix16_to_float(value); }
-		operator int16_t() const { return fix16_to_int(value);   }
+		operator int16_t() const { return (int16_t)fix16_to_int(value);   }
 
 		Fix16 & operator=(const Fix16 &rhs)  { value = rhs.value;             return *this; }
 		Fix16 & operator=(const fix16_t rhs) { value = rhs;                   return *this; }
