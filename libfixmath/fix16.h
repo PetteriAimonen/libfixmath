@@ -70,7 +70,7 @@ static inline fix16_t fix16_from_dbl(double a)
 {
 	double temp = a * fix16_one;
 #ifndef FIXMATH_NO_ROUNDING
-	temp += (temp >= 0) ? 0.5f : -0.5f;
+	temp += (double)((temp >= 0) ? 0.5f : -0.5f);
 #endif
 	return (fix16_t)temp;
 }
