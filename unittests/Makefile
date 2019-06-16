@@ -12,6 +12,9 @@ all: run_fix16_unittests run_fix16_exp_unittests run_fix16_str_unittests run_fix
 
 clean:
 	rm -f fix16_unittests_????
+	rm -f fix16_str_unittests
+	rm -f fix16_exp_unittests
+	rm -f fix16_macros_unittests
 
 # The library is tested automatically under different compilations
 # options.
