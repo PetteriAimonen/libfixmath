@@ -12,7 +12,8 @@ all: run_fix16_unittests run_fix16_exp_unittests run_fix16_str_unittests run_fix
 
 clean:
 	rm -f fix16_unittests_????
-	rm -f fix16_str_unittests
+	rm -f fix16_str_unittests_default
+	rm -f fix16_str_unittests_no_ctype
 	rm -f fix16_exp_unittests
 	rm -f fix16_macros_unittests
 
@@ -47,6 +48,7 @@ fix16_unittests_ro08: DEFINES=-DFIXMATH_OPTIMIZE_8BIT
 fix16_unittests_no08: DEFINES=-DFIXMATH_NO_ROUNDING -DFIXMATH_OPTIMIZE_8BIT
 fix16_unittests_rn08: DEFINES=-DFIXMATH_NO_OVERFLOW -DFIXMATH_OPTIMIZE_8BIT
 fix16_unittests_nn08: DEFINES=-DFIXMATH_NO_OVERFLOW -DFIXMATH_NO_ROUNDING -DFIXMATH_OPTIMIZE_8BIT
+fix16_str_unittests_no_ctype: DEFINES=-DFIXMATH_NO_CTYPE
 
 fix16_unittests_% : fix16_unittests.c $(FIX16_SRC)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $^ -lm
@@ -58,12 +60,13 @@ run_fix16_exp_unittests: fix16_exp_unittests
 
 fix16_exp_unittests: fix16_exp_unittests.c $(FIX16_SRC)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $^ -lm
-	
-# Tests for string conversion, run only in default config
-run_fix16_str_unittests: fix16_str_unittests
-	./fix16_str_unittests > /dev/null
 
-fix16_str_unittests: fix16_str_unittests.c $(FIX16_SRC)
+# Tests for string conversion, run only in default config and no ctype
+run_fix16_str_unittests: fix16_str_unittests_default fix16_str_unittests_no_ctype
+	./fix16_str_unittests_default > /dev/null
+	./fix16_str_unittests_no_ctype > /dev/null
+
+fix16_str_unittests_%: fix16_str_unittests.c $(FIX16_SRC)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $^ -lm
 
 # Tests for literal macros, run only in default config
