@@ -33,22 +33,22 @@ static inline int int64_cmp_le(int64_t x, int64_t y) { return (x <= y); }
 typedef struct {
 	 int32_t hi;
 	uint32_t lo;
-} __int64_t;
+} _int64_t;
 
-static inline __int64_t int64_const(int32_t hi, uint32_t lo) { return (__int64_t){ hi, lo }; }
-static inline __int64_t int64_from_int32(int32_t x) { return (__int64_t){ (x < 0 ? -1 : 0), x }; }
-static inline   int32_t int64_hi(__int64_t x) { return x.hi; }
-static inline  uint32_t int64_lo(__int64_t x) { return x.lo; }
+static inline _int64_t int64_const(int32_t hi, uint32_t lo) { return (_int64_t){ hi, lo }; }
+static inline _int64_t int64_from_int32(int32_t x) { return (_int64_t){ (x < 0 ? -1 : 0), x }; }
+static inline   int32_t int64_hi(_int64_t x) { return x.hi; }
+static inline  uint32_t int64_lo(_int64_t x) { return x.lo; }
 
-static inline int int64_cmp_eq(__int64_t x, __int64_t y) { return ((x.hi == y.hi) && (x.lo == y.lo)); }
-static inline int int64_cmp_ne(__int64_t x, __int64_t y) { return ((x.hi != y.hi) || (x.lo != y.lo)); }
-static inline int int64_cmp_gt(__int64_t x, __int64_t y) { return ((x.hi > y.hi) || ((x.hi == y.hi) && (x.lo >  y.lo))); }
-static inline int int64_cmp_ge(__int64_t x, __int64_t y) { return ((x.hi > y.hi) || ((x.hi == y.hi) && (x.lo >= y.lo))); }
-static inline int int64_cmp_lt(__int64_t x, __int64_t y) { return ((x.hi < y.hi) || ((x.hi == y.hi) && (x.lo <  y.lo))); }
-static inline int int64_cmp_le(__int64_t x, __int64_t y) { return ((x.hi < y.hi) || ((x.hi == y.hi) && (x.lo <= y.lo))); }
+static inline int int64_cmp_eq(_int64_t x, _int64_t y) { return ((x.hi == y.hi) && (x.lo == y.lo)); }
+static inline int int64_cmp_ne(_int64_t x, _int64_t y) { return ((x.hi != y.hi) || (x.lo != y.lo)); }
+static inline int int64_cmp_gt(_int64_t x, _int64_t y) { return ((x.hi > y.hi) || ((x.hi == y.hi) && (x.lo >  y.lo))); }
+static inline int int64_cmp_ge(_int64_t x, _int64_t y) { return ((x.hi > y.hi) || ((x.hi == y.hi) && (x.lo >= y.lo))); }
+static inline int int64_cmp_lt(_int64_t x, _int64_t y) { return ((x.hi < y.hi) || ((x.hi == y.hi) && (x.lo <  y.lo))); }
+static inline int int64_cmp_le(_int64_t x, _int64_t y) { return ((x.hi < y.hi) || ((x.hi == y.hi) && (x.lo <= y.lo))); }
 
-static inline __int64_t int64_add(__int64_t x, __int64_t y) {
-	__int64_t ret;
+static inline _int64_t int64_add(_int64_t x, _int64_t y) {
+	_int64_t ret;
 	ret.hi = x.hi + y.hi;
 	ret.lo = x.lo + y.lo;
 	if((ret.lo < x.lo) || (ret.hi < y.hi))
@@ -56,8 +56,8 @@ static inline __int64_t int64_add(__int64_t x, __int64_t y) {
 	return ret;
 }
 
-static inline __int64_t int64_neg(__int64_t x) {
-	__int64_t ret;
+static inline _int64_t int64_neg(_int64_t x) {
+	_int64_t ret;
 	ret.hi = ~x.hi;
 	ret.lo = ~x.lo + 1;
 	if(ret.lo == 0)
@@ -65,28 +65,28 @@ static inline __int64_t int64_neg(__int64_t x) {
 	return ret;
 }
 
-static inline __int64_t int64_sub(__int64_t x, __int64_t y) {
+static inline _int64_t int64_sub(_int64_t x, _int64_t y) {
 	return int64_add(x, int64_neg(y));
 }
 
-static inline __int64_t int64_shift(__int64_t x, int8_t y) {
-	__int64_t ret;
+static inline _int64_t int64_shift(_int64_t x, int8_t y) {
+	_int64_t ret;
 	if(y > 0) {
 		if(y >= 32)
-			return (__int64_t){ 0, 0 };
+			return (_int64_t){ 0, 0 };
 		ret.hi = (x.hi << y) | (x.lo >> (32 - y));
 		ret.lo = (x.lo << y);
 	} else {
 		y = -y;
 		if(y >= 32)
-			return (__int64_t){ 0, 0 };
+			return (_int64_t){ 0, 0 };
 		ret.lo = (x.lo >> y) | (x.hi << (32 - y));
 		ret.hi = (x.hi >> y);
 	}
 	return ret;
 }
 
-static inline __int64_t int64_mul_i32_i32(int32_t x, int32_t y) {
+static inline _int64_t int64_mul_i32_i32(int32_t x, int32_t y) {
 	 int16_t hi[2] = { (x >> 16), (y >> 16) };
 	uint16_t lo[2] = { (x & 0xFFFF), (y & 0xFFFF) };
 
@@ -97,10 +97,10 @@ static inline __int64_t int64_mul_i32_i32(int32_t x, int32_t y) {
 	r_hi += (r_md >> 16);
 	r_lo += (r_md << 16);
 
-	return (__int64_t){ r_hi, r_lo };
+	return (_int64_t){ r_hi, r_lo };
 }
 
-static inline __int64_t int64_mul_i64_i32(__int64_t x, int32_t y) {
+static inline _int64_t int64_mul_i64_i32(_int64_t x, int32_t y) {
 	int neg = ((x.hi ^ y) < 0);
 	if(x.hi < 0)
 		x = int64_neg(x);
@@ -116,26 +116,26 @@ static inline __int64_t int64_mul_i64_i32(__int64_t x, int32_t y) {
 	r[2] = (_x[1] * _y[1]) + (_x[2] * _y[0]);
 	r[3] = (_x[2] * _y[0]) + (_x[1] * _y[1]);
 
-	__int64_t ret;
+	_int64_t ret;
 	ret.lo = r[0] + (r[1] << 16);
 	ret.hi = (r[3] << 16) + r[2] + (r[1] >> 16);
 	return (neg ? int64_neg(ret) : ret);
 }
 
-static inline __int64_t int64_div_i64_i32(__int64_t x, int32_t y) {
+static inline _int64_t int64_div_i64_i32(_int64_t x, int32_t y) {
 	int neg = ((x.hi ^ y) < 0);
 	if(x.hi < 0)
 		x = int64_neg(x);
 	if(y < 0)
 		y = -y;
 
-	__int64_t ret = { (x.hi / y) , (x.lo / y) };
+	_int64_t ret = { (x.hi / y) , (x.lo / y) };
 	x.hi = x.hi % y;
 	x.lo = x.lo % y;
 
-	__int64_t _y = int64_from_int32(y);
+	_int64_t _y = int64_from_int32(y);
 
-	__int64_t i;
+	_int64_t i;
 	for(i = int64_from_int32(1); int64_cmp_lt(_y, x); _y = int64_shift(_y, 1), i = int64_shift(i, 1));
 
 	while(x.hi) {
@@ -151,7 +151,7 @@ static inline __int64_t int64_div_i64_i32(__int64_t x, int32_t y) {
 	return (neg ? int64_neg(ret) : ret);
 }
 
-#define int64_t __int64_t
+#define int64_t _int64_t
 
 #endif
 
