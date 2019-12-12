@@ -6,6 +6,8 @@ extern "C"
 {
 #endif
 
+#include <stdint.h>
+
 #ifndef FIXMATH_NO_64BIT
 static inline  int64_t int64_const(int32_t hi, uint32_t lo) { return (((int64_t)hi << 32) | lo); }
 static inline  int64_t int64_from_int32(int32_t x) { return (int64_t)x; }
