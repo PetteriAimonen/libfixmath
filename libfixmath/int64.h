@@ -19,7 +19,7 @@ static inline int64_t int64_neg(int64_t x)              { return (-x);     }
 static inline int64_t int64_sub(int64_t x, int64_t y)   { return (x - y);  }
 static inline int64_t int64_shift(int64_t x, int8_t y)  { return (y < 0 ? (x >> -y) : (x << y)); }
 
-static inline int64_t int64_mul_i32_i32(int32_t x, int32_t y) { return (x * y);  }
+static inline int64_t int64_mul_i32_i32(int32_t x, int32_t y) { return ((int64_t)x * y);  }
 static inline int64_t int64_mul_i64_i32(int64_t x, int32_t y) { return (x * y);  }
 
 static inline int64_t int64_div_i64_i32(int64_t x, int32_t y) { return (x / y);  }
