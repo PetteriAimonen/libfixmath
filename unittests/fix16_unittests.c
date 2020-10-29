@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
+#include "int64.h"
 #include "unittests.h"
 
 const fix16_t testcases[] = {
@@ -330,7 +331,31 @@ int main()
     TEST(failures == 0);
   }
   
-#ifndef FIXMATH_NO_64BIT
+  {
+    COMMENT("Running int64 test cases");
+    TEST(int64_cmp_eq(int64_const(0,1), int64_from_int32(1)));
+    TEST(int64_cmp_eq(int64_const(0xffffffff,0xfffffffe), int64_from_int32(-2)));
+    TEST(int64_cmp_eq(int64_const(1,0), int64_shift(int64_from_int32(1),32)));
+    TEST(int64_cmp_eq(int64_const(1,0), int64_shift(int64_from_int32(2),31)));
+    TEST(int64_cmp_eq(int64_const(0,(1<<31)), int64_shift(int64_from_int32(1),31)));
+    TEST(int64_cmp_eq(int64_const(-2,0), int64_shift(int64_from_int32(-1),33)));
+    TEST(int64_cmp_eq(int64_const(0,1), int64_shift(int64_const(0,2),-1)));
+    TEST(int64_cmp_eq(int64_const(2,1), int64_shift(int64_const(4,2),-1)));
+    TEST(int64_cmp_eq(int64_const(0,(1<<31)), int64_shift(int64_const(1,0),-1)));
+    TEST(int64_cmp_eq(int64_const(0,4), int64_shift(int64_const(2,0),-31)));
+    TEST(int64_cmp_eq(int64_const(0,2), int64_shift(int64_const(2,0),-32)));
+    TEST(int64_cmp_eq(int64_const(0,1), int64_shift(int64_const(2,0),-33)));
+    int64_t bit31 = int64_const(0, 0x80000000);
+    int64_t negbit31 = int64_const(-1, 0x80000000);
+    TEST(int64_cmp_eq(negbit31, int64_neg(bit31)));
+    TEST(int64_cmp_eq(int64_const(1,0), int64_mul_i64_i32(bit31, 2)));
+    TEST(int64_cmp_eq(int64_const(-1,(1<<31)), int64_mul_i64_i32(bit31, -1)));
+    TEST(int64_cmp_eq(int64_mul_i64_i32(int64_const(0,-1), fix16_maximum), 
+         int64_const(0x7ffffffe, 0x80000001)));
+    TEST(int64_cmp_eq(int64_mul_i64_i32(int64_const(0,1), fix16_minimum), 
+         int64_const(-1, fix16_minimum)));
+  }
+  
   {
     COMMENT("Running linear interpolation test cases");
     
@@ -358,7 +383,6 @@ int main()
     TEST(fix16_lerp32(fix16_minimum, fix16_maximum, 0xffffffff) == (fix16_maximum - 1));
     TEST(fix16_lerp32(-fix16_maximum, fix16_maximum, 0x80000000) == 0);
   }
-#endif
   
   if (status != 0)
     fprintf(stdout, "\n\nSome tests FAILED!\n");
