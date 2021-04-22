@@ -23,7 +23,7 @@ run-benchmark-arm: benchmark-arm.elf
 
 benchmark-avr.elf: $(FILES) interface-avr.c testcases.c
 	avr-gcc -Wall -mmcu=atmega128 $(CFLAGS) \
-		-Wall -O2 -DFIXMATH_OPTIMIZE_8BIT \
+		-O2 -DFIXMATH_OPTIMIZE_8BIT \
 		-o $@ -I .. $(FILES) interface-avr.c
 
 run-benchmark-avr: benchmark-avr.elf

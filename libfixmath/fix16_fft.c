@@ -9,7 +9,7 @@
  */
 
 #include <stdint.h>
-#include <libfixmath/fix16.h>
+#include "fix16.h"
 
 // You can change the input datatype and intermediate scaling here.
 // By default, the output is divided by the transform length to get a normalized FFT.
