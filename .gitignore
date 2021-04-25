@@ -160,3 +160,5 @@ compile_commands.json
 *_qmlcache.qrc
 
 benchmarks/testcases.c
+
+*.elf

@@ -6,6 +6,9 @@ FILES = benchmark.c ../libfixmath/fix16.c ../libfixmath/fix16_sqrt.c ../libfixma
 
 CFLAGS = -DFIXMATH_NO_OVERFLOW -DFIXMATH_NO_ROUNDING -ffast-math -I../libfixmath
 
+.PHONY clean:
+	rm -f *.elf
+
 testcases.c: generate_testcases.py
 	python $<
 
