@@ -1,6 +1,6 @@
-#include <stdio.h>
 #include "tests.h"
 #include "tests_basic.h"
+#include <stdio.h>
 
 const fix16_t testcases[] = {
     // Small numbers
@@ -30,8 +30,7 @@ const fix16_t testcases[] = {
 
     // Tiny random numbers
     -171, -359, 491, 844, 158, -413, -422, -737, -575, -330, -376, 435, -311,
-    116, 715, -1024, -487, 59, 724, 993
-};
+    116, 715, -1024, -487, 59, 724, 993};
 
 int main()
 {
