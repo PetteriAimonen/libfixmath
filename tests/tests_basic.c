@@ -9,7 +9,17 @@ int test_abs_short(void)
         double fa      = fix16_to_dbl(a);
         fix16_t result = fix16_abs(a);
         double fresult = fabs(fa);
-        ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(1));
+        double min     = fix16_to_dbl(fix16_minimum);
+        if (fa <= min)
+        {
+#ifndef FIXMATH_NO_OVERFLOW
+            ASSERT_EQ_INT(result, fix16_overflow);
+#endif
+        }
+        else
+        {
+            ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(1));
+        }
     }
     return 0;
 }
@@ -22,7 +32,17 @@ int test_abs_long(void)
         double fa      = fix16_to_dbl(a);
         fix16_t result = fix16_abs(a);
         double fresult = fabs(fa);
-        ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(1));
+        double min     = fix16_to_dbl(fix16_minimum);
+        if (fa <= min)
+        {
+#ifndef FIXMATH_NO_OVERFLOW
+            ASSERT_EQ_INT(result, fix16_overflow);
+#endif
+        }
+        else
+        {
+            ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(1));
+        }
     }
     return 0;
 }
@@ -46,7 +66,19 @@ int test_add_short(void)
             double fb      = fix16_to_dbl(b);
             fix16_t result = fix16_add(a, b);
             double fresult = fa + fb;
-            ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(1));
+            double max     = fix16_to_dbl(fix16_maximum);
+            double min     = fix16_to_dbl(fix16_minimum);
+            if ((fa + fb > max) || (fa + fb < min))
+            {
+#ifndef FIXMATH_NO_OVERFLOW
+                ASSERT_EQ_INT(result, fix16_overflow);
+#endif
+            }
+            else
+            {
+                ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
+                                   fix16_to_dbl(1));
+            }
         }
     }
     return 0;
@@ -55,5 +87,34 @@ int test_add_short(void)
 int test_add(void)
 {
     TEST(test_add_short());
+    return 0;
+}
+
+int test_mul_specific(void)
+{
+    ASSERT_EQ_INT(fix16_mul(fix16_from_int(5), fix16_from_int(5)),
+                  fix16_from_int(25));
+    ASSERT_EQ_INT(fix16_mul(fix16_from_int(-5), fix16_from_int(5)),
+                  fix16_from_int(-25));
+    ASSERT_EQ_INT(fix16_mul(fix16_from_int(-5), fix16_from_int(-5)),
+                  fix16_from_int(25));
+    ASSERT_EQ_INT(fix16_mul(fix16_from_int(5), fix16_from_int(-5)),
+                  fix16_from_int(-25));
+
+    ASSERT_EQ_INT(fix16_mul(0, 10), 0);
+    ASSERT_EQ_INT(fix16_mul(2, 0x8000), 1);
+    ASSERT_EQ_INT(fix16_mul(-2, 0x8000), -1);
+    ASSERT_EQ_INT(fix16_mul(3, 0x8000), 2);
+    ASSERT_EQ_INT(fix16_mul(-3, 0x8000), -2);
+    ASSERT_EQ_INT(fix16_mul(2, 0x7FFF), 1);
+    ASSERT_EQ_INT(fix16_mul(-2, 0x7FFF), -1);
+    ASSERT_EQ_INT(fix16_mul(2, 0x8001), 1);
+    ASSERT_EQ_INT(fix16_mul(-2, 0x8001), -1);
+    return 0;
+}
+
+int test_mul(void)
+{
+    TEST(test_mul_specific());
     return 0;
 }

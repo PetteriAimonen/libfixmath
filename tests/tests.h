@@ -46,6 +46,21 @@
         }                                                           \
     } while (0)
 
+#define ASSERT_EQ_INT(a, b)                                            \
+    do                                                                 \
+    {                                                                  \
+        if ((a) != (b))                                                \
+        {                                                              \
+            fflush(stdout);                                            \
+            fflush(stderr);                                            \
+            fprintf(stdout,                                            \
+                    "\033[31;1mFAILED:\033[22;39m " __FILE__           \
+                    ":" STR2(__LINE__) ", %s() a: %i, b: %i\n\033[0m", \
+                    __func__, (a), (b));                               \
+            return 1;                                                  \
+        }                                                              \
+    } while (0)
+
 extern const fix16_t testcases[102];
 
 #define TESTCASES_COUNT (sizeof(testcases) / sizeof(testcases[0]))
