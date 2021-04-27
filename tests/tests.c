@@ -32,8 +32,12 @@ const fix16_t testcases[] = {
     -171, -359, 491, 844, 158, -413, -422, -737, -575, -330, -376, 435, -311,
     116, 715, -1024, -487, 59, 724, 993};
 
+unsigned stack_depth=0;
+
 int main()
 {
+    TEST(test_abs());
     TEST(test_add());
+    TEST(test_mul());
     return 0;
 }
