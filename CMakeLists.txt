@@ -11,11 +11,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wextra -Werror=return-type")
 
 include(libfixmath/libfixmath.cmake)
+include(tests/tests.cmake)
 
 file(GLOB fixsingen-srcs fixsingen/*.c)
 file(GLOB fixtest-srcs fixtest/*.c fixtest/*.h)
 file(GLOB unittests-srcs unittests/*.c unittests/*.h)
-file(GLOB tests-srcs tests/*.c tests/*.h)
 
 add_executable(fixtest ${fixtest-srcs})
 target_link_libraries(fixtest PRIVATE libfixmath m)
@@ -29,6 +29,4 @@ add_executable(unittests ${unittests-srcs})
 target_link_libraries(unittests PRIVATE libfixmath m)
 target_include_directories(unittests PRIVATE ${CMAKE_SOURCE_DIR})
 
-add_executable(tests ${tests-srcs})
-target_link_libraries(tests PRIVATE libfixmath m)
-target_include_directories(tests PRIVATE ${CMAKE_SOURCE_DIR})
+
