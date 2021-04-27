@@ -2,7 +2,7 @@
 CC = gcc
 
 # Basic CFLAGS for debugging
-CFLAGS = -g -O0 -I../libfixmath -Wall -Wextra -Werror
+CFLAGS = -g -O0 -I../libfixmath -I.. -Wall -Wextra -Werror
 
 # The files required for tests
 FIX16_SRC = ../libfixmath/fix16.c ../libfixmath/fix16_sqrt.c ../libfixmath/fix16_str.c \
