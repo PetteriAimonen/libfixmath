@@ -39,6 +39,7 @@ unsigned stack_depth = 0;
 
 int main()
 {
+    printf("\033[1;34m\nVARIANT: \033[39m"STR2(PREFIX)"\033[0m\n");
     TEST(test_abs());
     TEST(test_add());
     TEST(test_mul());

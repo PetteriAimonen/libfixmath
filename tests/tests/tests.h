@@ -22,7 +22,7 @@ extern unsigned stack_depth;
             fflush(stdout);                                           \
             fflush(stderr);                                           \
             fprintf(stdout,                                           \
-                    "\033[31;1mFAILED:\033[22;39m%*s" #x              \
+                    "\033[31;1m FAILED:\033[22;39m%*s" #x             \
                     " \033[0mat: " __FILE__ ":" STR2(__LINE__) " \n", \
                     stack_depth, "");                                 \
             --stack_depth;                                            \
@@ -32,26 +32,27 @@ extern unsigned stack_depth;
         {                                                             \
             fflush(stdout);                                           \
             fflush(stderr);                                           \
-            printf("\033[32;1m    OK:\033[22;39m%*s" #x "\n\033[0m",  \
+            printf("\033[32;1m     OK:\033[22;39m%*s" #x "\n\033[0m", \
                    stack_depth, "");                                  \
         }                                                             \
         --stack_depth;                                                \
     } while (0)
 
-#define ASSERT_NEAR_DOUBLE(a, b, eps)                                       \
-    do                                                                      \
-    {                                                                       \
-        if ((delta((a), (b)) >= (eps)))                                     \
-        {                                                                   \
-            fflush(stdout);                                                 \
-            fflush(stderr);                                                 \
-            fprintf(stdout,                                                 \
-                    "\033[31;1mFAILED:\033[22;39m%*sASSERT_NEAR a: %f, b: " \
-                    "%f, eps: %f\033[0m at: %s(), " __FILE__                \
-                    ":" STR2(__LINE__) "\n",                                \
-                    stack_depth, "", (a), (b), (eps), __func__);            \
-            return 1;                                                       \
-        }                                                                   \
+#define ASSERT_NEAR_DOUBLE(a, b, eps, ...)                                   \
+    do                                                                       \
+    {                                                                        \
+        if ((delta((a), (b)) >= (eps)))                                      \
+        {                                                                    \
+            fflush(stdout);                                                  \
+            fflush(stderr);                                                  \
+            fprintf(stdout,                                                  \
+                    "\033[31;1m FAILED:\033[22;39m%*sASSERT_NEAR a: %f, b: " \
+                    "%f, eps: %f\033[0m at: %s(), " __FILE__                 \
+                    ":" STR2(__LINE__) "\n",                                 \
+                    stack_depth, "", (a), (b), (eps), __func__);             \
+            fprintf(stdout, __VA_ARGS__);                                    \
+            return 1;                                                        \
+        }                                                                    \
     } while (0)
 
 #define ASSERT_EQ_INT(a, b)                                                  \
@@ -62,7 +63,7 @@ extern unsigned stack_depth;
             fflush(stdout);                                                  \
             fflush(stderr);                                                  \
             fprintf(stdout,                                                  \
-                    "\033[31;1mFAILED:\033[22;39m%*sASSERT_EQ a: %i, b: "    \
+                    "\033[31;1m FAILED:\033[22;39m%*sASSERT_EQ a: %i, b: "   \
                     "%i\033[0m at: %s(), " __FILE__ ":" STR2(__LINE__) "\n", \
                     stack_depth, "", (a), (b), __func__);                    \
             return 1;                                                        \

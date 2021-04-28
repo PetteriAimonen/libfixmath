@@ -18,7 +18,7 @@ int test_abs_short(void)
         }
         else
         {
-            ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(1));
+            ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(fix16_eps),"");
         }
     }
     return 0;
@@ -55,7 +55,7 @@ int test_add_short(void)
             else
             {
                 ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
-                                   fix16_to_dbl(1));
+                                   fix16_to_dbl(fix16_eps),"");
             }
         }
     }
@@ -82,12 +82,14 @@ int test_mul_specific(void)
     ASSERT_EQ_INT(fix16_mul(0, 10), 0);
     ASSERT_EQ_INT(fix16_mul(2, 0x8000), 1);
     ASSERT_EQ_INT(fix16_mul(-2, 0x8000), -1);
+#ifndef FIXMATH_NO_ROUNDING
     ASSERT_EQ_INT(fix16_mul(3, 0x8000), 2);
-    ASSERT_EQ_INT(fix16_mul(-3, 0x8000), -2);
     ASSERT_EQ_INT(fix16_mul(2, 0x7FFF), 1);
+    ASSERT_EQ_INT(fix16_mul(-2, 0x8001), -1);
+    ASSERT_EQ_INT(fix16_mul(-3, 0x8000), -2);
     ASSERT_EQ_INT(fix16_mul(-2, 0x7FFF), -1);
     ASSERT_EQ_INT(fix16_mul(2, 0x8001), 1);
-    ASSERT_EQ_INT(fix16_mul(-2, 0x8001), -1);
+#endif
     return 0;
 }
 
@@ -117,7 +119,7 @@ int test_mul_short()
             else
             {
                 ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
-                                   fix16_to_dbl(1));
+                                   fix16_to_dbl(fix16_eps),"");
             }
         }
     }
@@ -181,7 +183,7 @@ int test_div_short()
             double max = fix16_to_dbl(fix16_maximum);
             double min = fix16_to_dbl(fix16_minimum);
 
-            if (fa / fb > max || fa / fb < min)
+            if ((fa / fb) > max || (fa / fb) < min)
             {
 #ifndef FIXMATH_NO_OVERFLOW
                 ASSERT_EQ_INT(result, fix16_overflow);
@@ -190,7 +192,7 @@ int test_div_short()
             else
             {
                 ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
-                                   fix16_to_dbl(1));
+                                   fix16_to_dbl(fix16_eps),"%i / %i \n",a,b);
             }
         }
     }
@@ -229,7 +231,7 @@ int test_sub_short()
             else
             {
                 ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
-                                   fix16_to_dbl(1));
+                                   fix16_to_dbl(fix16_eps),"");
             }
         }
     }

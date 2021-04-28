@@ -23,7 +23,7 @@ int test_sqrt_short()
         double  fa      = fix16_to_dbl(a);
         fix16_t result  = fix16_sqrt(a);
         double  fresult = sqrt(fa);
-        ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(1));
+        ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(1),"");
     }
     return 0;
 }

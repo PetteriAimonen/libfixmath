@@ -13,7 +13,7 @@ set(no08 PREFIX=no08 FIXMATH_NO_ROUNDING FIXMATH_OPTIMIZE_8BIT)
 set(rn08 PREFIX=rn08 FIXMATH_NO_OVERFLOW FIXMATH_OPTIMIZE_8BIT)
 set(nn08 PREFIX=nn08 FIXMATH_NO_OVERFLOW FIXMATH_NO_ROUNDING FIXMATH_OPTIMIZE_8BIT)
 
-add_executable(tests tests/main.c)
+add_custom_target(tests)
 
 function(create_variant name defs)
     #message("Argument count: ${ARGC}")
@@ -22,11 +22,13 @@ function(create_variant name defs)
     #message("defs: ${defs}")
     add_library(libfixmath_${name} STATIC ${libfixmath-srcs})
     target_compile_definitions(libfixmath_${name} PRIVATE ${defs})
-    add_executable(tests_${name} ${tests-srcs} ${libfixmath-srcs})
+    add_executable(tests_${name} ${tests-srcs})
     target_link_libraries(tests_${name} PRIVATE libfixmath_${name} m)
     target_include_directories(tests_${name} PRIVATE ${CMAKE_SOURCE_DIR})
     target_compile_definitions(tests_${name} PRIVATE ${defs})
+    add_dependencies(tests tests_${name})
 endfunction()
+
 
 create_variant("ro64" "${ro64}")
 create_variant("no64" "${no64}")
@@ -40,3 +42,5 @@ create_variant("ro08" "${ro08}")
 create_variant("no08" "${no08}")
 create_variant("rn08" "${rn08}")
 create_variant("nn08" "${nn08}")
+
+
