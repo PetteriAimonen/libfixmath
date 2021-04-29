@@ -1,6 +1,6 @@
 /* This test checks that the F16() and F16C() macros work correctly. */
 
-#include <fix16.h>
+#include <libfixmath/fix16.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
