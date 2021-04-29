@@ -18,7 +18,8 @@ int test_abs_short(void)
         }
         else
         {
-            ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result), fix16_to_dbl(fix16_eps),"");
+            ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
+                               fix16_to_dbl(fix16_eps), "in: %f", fa);
         }
     }
     return 0;
@@ -55,7 +56,7 @@ int test_add_short(void)
             else
             {
                 ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
-                                   fix16_to_dbl(fix16_eps),"");
+                                   fix16_to_dbl(fix16_eps), "%f + %f", fa, fb);
             }
         }
     }
@@ -119,7 +120,7 @@ int test_mul_short()
             else
             {
                 ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
-                                   fix16_to_dbl(fix16_eps),"");
+                                   fix16_to_dbl(fix16_eps), "%f * %f", fa, fb);
             }
         }
     }
@@ -192,7 +193,7 @@ int test_div_short()
             else
             {
                 ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
-                                   fix16_to_dbl(fix16_eps),"%i / %i \n",a,b);
+                                   fix16_to_dbl(fix16_eps), "%i / %i \n", a, b);
             }
         }
     }
@@ -231,7 +232,7 @@ int test_sub_short()
             else
             {
                 ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
-                                   fix16_to_dbl(fix16_eps),"");
+                                   fix16_to_dbl(fix16_eps), "%f - %f", fa, fb);
             }
         }
     }

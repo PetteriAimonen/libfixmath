@@ -50,6 +50,7 @@ extern unsigned stack_depth;
                     "%f, eps: %f\033[0m at: %s(), " __FILE__                 \
                     ":" STR2(__LINE__) "\n",                                 \
                     stack_depth, "", (a), (b), (eps), __func__);             \
+            fprintf(stdout, "        %*s", stack_depth, "");                 \
             fprintf(stdout, __VA_ARGS__);                                    \
             return 1;                                                        \
         }                                                                    \
