@@ -21,7 +21,7 @@ extern unsigned stack_depth;
         {                                                             \
             fflush(stdout);                                           \
             fflush(stderr);                                           \
-            fprintf(stdout,                                           \
+            fprintf(stderr,                                           \
                     "\033[31;1m FAILED:\033[22;39m%*s" #x             \
                     " \033[0mat: " __FILE__ ":" STR2(__LINE__) " \n", \
                     stack_depth, "");                                 \
@@ -45,7 +45,7 @@ extern unsigned stack_depth;
         {                                                                    \
             fflush(stdout);                                                  \
             fflush(stderr);                                                  \
-            fprintf(stdout,                                                  \
+            fprintf(stderr,                                                  \
                     "\033[31;1m FAILED:\033[22;39m%*sASSERT_NEAR a: %f, b: " \
                     "%f, eps: %f\033[0m at: %s(), " __FILE__                 \
                     ":" STR2(__LINE__) "\n",                                 \
@@ -63,7 +63,7 @@ extern unsigned stack_depth;
         {                                                                    \
             fflush(stdout);                                                  \
             fflush(stderr);                                                  \
-            fprintf(stdout,                                                  \
+            fprintf(stderr,                                                  \
                     "\033[31;1m FAILED:\033[22;39m%*sASSERT_EQ a: %i, b: "   \
                     "%i\033[0m at: %s(), " __FILE__ ":" STR2(__LINE__) "\n", \
                     stack_depth, "", (a), (b), __func__);                    \
