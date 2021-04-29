@@ -1,8 +1,8 @@
-#include <fix16.h>
+#include <libfixmath/fix16.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
-#include "int64.h"
+#include "libfixmath/int64.h"
 #include "unittests.h"
 
 const fix16_t testcases[] = {

@@ -4,13 +4,14 @@ project(libfixmath LANGUAGES CXX C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_FLAGS "-Wall -pedantic -Wextra")
+set(CMAKE_C_FLAGS "-Wall -pedantic -Wextra -Werror=return-type")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wextra")
+set(CMAKE_CXX_FLAGS "-Wall -pedantic -Wextra -Werror=return-type")
 
 include(libfixmath/libfixmath.cmake)
+include(tests/tests.cmake)
 
 file(GLOB fixsingen-srcs fixsingen/*.c)
 file(GLOB fixtest-srcs fixtest/*.c fixtest/*.h)
@@ -27,3 +28,5 @@ target_include_directories(fixsingen PRIVATE ${CMAKE_SOURCE_DIR})
 add_executable(unittests ${unittests-srcs})
 target_link_libraries(unittests PRIVATE libfixmath m)
 target_include_directories(unittests PRIVATE ${CMAKE_SOURCE_DIR})
+
+

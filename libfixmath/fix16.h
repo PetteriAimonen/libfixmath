@@ -38,6 +38,7 @@ static const fix16_t fix16_overflow = 0x80000000; /*!< the value used to indicat
 static const fix16_t fix16_pi  = 205887;     /*!< fix16_t value of pi */
 static const fix16_t fix16_e   = 178145;     /*!< fix16_t value of e */
 static const fix16_t fix16_one = 0x00010000; /*!< fix16_t value of 1 */
+static const fix16_t fix16_eps = 1;          /*!< fix16_t epsilon */
 
 /* Conversion functions between fix16_t and float/integer.
  * These are inlined to allow compiler to optimize away constant numbers
@@ -87,7 +88,7 @@ static inline fix16_t fix16_from_dbl(double a)
 #define F16(x) ((fix16_t)(((x) >= 0) ? ((x) * 65536.0 + 0.5) : ((x) * 65536.0 - 0.5)))
 
 static inline fix16_t fix16_abs(fix16_t x)
-    { return (x < 0 ? -(uint32_t)x : x); }
+	{ return (x < 0 ? -x : x); }
 static inline fix16_t fix16_floor(fix16_t x)
 	{ return (x & 0xFFFF0000UL); }
 static inline fix16_t fix16_ceil(fix16_t x)
