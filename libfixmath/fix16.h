@@ -38,6 +38,7 @@ static const fix16_t fix16_overflow = 0x80000000; /*!< the value used to indicat
 static const fix16_t fix16_pi  = 205887;     /*!< fix16_t value of pi */
 static const fix16_t fix16_e   = 178145;     /*!< fix16_t value of e */
 static const fix16_t fix16_one = 0x00010000; /*!< fix16_t value of 1 */
+static const fix16_t fix16_eps = 1;          /*!< fix16_t epsilon */
 
 /* Conversion functions between fix16_t and float/integer.
  * These are inlined to allow compiler to optimize away constant numbers

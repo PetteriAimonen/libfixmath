@@ -6,6 +6,9 @@ FILES = benchmark.c ../libfixmath/fix16.c ../libfixmath/fix16_sqrt.c ../libfixma
 
 CFLAGS = -DFIXMATH_NO_OVERFLOW -DFIXMATH_NO_ROUNDING -ffast-math -I../libfixmath
 
+.PHONY clean:
+	rm -f *.elf
+
 testcases.c: generate_testcases.py
 	python $<
 
@@ -23,7 +26,7 @@ run-benchmark-arm: benchmark-arm.elf
 
 benchmark-avr.elf: $(FILES) interface-avr.c testcases.c
 	avr-gcc -Wall -mmcu=atmega128 $(CFLAGS) \
-		-Wall -O2 -DFIXMATH_OPTIMIZE_8BIT \
+		-O2 -DFIXMATH_OPTIMIZE_8BIT \
 		-o $@ -I .. $(FILES) interface-avr.c
 
 run-benchmark-avr: benchmark-avr.elf
