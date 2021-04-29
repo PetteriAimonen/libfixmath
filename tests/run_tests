@@ -1,2 +1,10 @@
 #!/bin/env bash
-for i in $(ls -1 tests_*); do ./$i; done
+for i in $(ls -1 tests_*)
+do
+	./$i;
+        ret=$?;
+if [ $ret -ne 0 ];
+then
+        exit $ret;
+fi
+done
