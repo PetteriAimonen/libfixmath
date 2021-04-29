@@ -15,7 +15,9 @@ set(nn08 PREFIX=nn08 FIXMATH_NO_OVERFLOW FIXMATH_NO_ROUNDING FIXMATH_OPTIMIZE_8B
 
 configure_file(tests/run_tests ${CMAKE_BINARY_DIR}/run_tests COPYONLY)
 
-add_custom_target(tests)
+enable_testing()
+
+add_custom_target(make_tests)
 
 function(create_variant name defs)
     add_library(libfixmath_${name} STATIC ${libfixmath-srcs})
@@ -24,7 +26,8 @@ function(create_variant name defs)
     target_link_libraries(tests_${name} PRIVATE libfixmath_${name} m)
     target_include_directories(tests_${name} PRIVATE ${CMAKE_SOURCE_DIR})
     target_compile_definitions(tests_${name} PRIVATE ${defs})
-    add_dependencies(tests tests_${name})
+    add_dependencies(make_tests tests_${name})
+    add_test(NAME tests_${name} COMMAND tests_${name})
 endfunction()
 
 
