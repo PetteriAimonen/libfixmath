@@ -1,4 +1,4 @@
-file(GLOB tests-srcs tests/tests/*.c tests/tests/*.h)
+file(GLOB tests-srcs tests/*.c tests/*.h)
 
 set(ro64 PREFIX=ro64)
 set(no64 PREFIX=no64 FIXMATH_NO_ROUNDING)
@@ -13,13 +13,11 @@ set(no08 PREFIX=no08 FIXMATH_NO_ROUNDING FIXMATH_OPTIMIZE_8BIT)
 set(rn08 PREFIX=rn08 FIXMATH_NO_OVERFLOW FIXMATH_OPTIMIZE_8BIT)
 set(nn08 PREFIX=nn08 FIXMATH_NO_OVERFLOW FIXMATH_NO_ROUNDING FIXMATH_OPTIMIZE_8BIT)
 
+configure_file(tests/run_tests ${CMAKE_BINARY_DIR}/run_tests COPYONLY)
+
 add_custom_target(tests)
 
 function(create_variant name defs)
-    #message("Argument count: ${ARGC}")
-    #message("all arguments: ${ARGV}")
-    #message("optional arguments: ${ARGN}")
-    #message("defs: ${defs}")
     add_library(libfixmath_${name} STATIC ${libfixmath-srcs})
     target_compile_definitions(libfixmath_${name} PRIVATE ${defs})
     add_executable(tests_${name} ${tests-srcs})

@@ -1,0 +1,2 @@
+#!/bin/env bash
+for i in $(ls -1 tests_*); do ./$i; done
