@@ -1,6 +1,7 @@
 #include "tests.h"
 #include "tests_basic.h"
 #include "tests_lerp.h"
+#include "tests_macros.h"
 #include "tests_sqrt.h"
 #include <stdio.h>
 
@@ -32,14 +33,13 @@ const fix16_t testcases[] = {
 
     // Tiny random numbers
     -171, -359, 491, 844, 158, -413, -422, -737, -575, -330, -376, 435, -311,
-    116, 715, -1024, -487, 59, 724, 993
-};
+    116, 715, -1024, -487, 59, 724, 993};
 
 unsigned stack_depth = 0;
 
 int main()
 {
-    printf("\033[1;34m\nVARIANT: \033[39m"STR2(PREFIX)"\033[0m\n");
+    printf("\033[1;34m\nVARIANT: \033[39m" STR2(PREFIX) "\033[0m\n");
     TEST(test_abs());
     TEST(test_add());
     TEST(test_mul());
@@ -47,5 +47,6 @@ int main()
     TEST(test_sub());
     TEST(test_sqrt());
     TEST(test_lerp());
+    TEST(test_macros());
     return 0;
 }
