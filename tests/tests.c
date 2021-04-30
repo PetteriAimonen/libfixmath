@@ -41,6 +41,34 @@ unsigned stack_depth = 0;
 int main()
 {
     printf("\033[1;34m\nVARIANT: \033[39m" STR2(PREFIX) "\033[0m\n");
+#if 0
+    fix16_t a      = 65536;
+    fix16_t b      = -2147483648;
+    fix16_t result = fix16_div(a, b);
+
+    double fa      = fix16_to_dbl(a);
+    double fb      = fix16_to_dbl(b);
+    double fresult = fa / fb;
+
+    double max = fix16_to_dbl(fix16_maximum);
+    double min = fix16_to_dbl(fix16_minimum);
+
+    printf("result  %i, %.20f\n", result, fix16_to_dbl(result));
+    printf("fresult %i, %.20f\n", fix16_from_dbl(fresult), fresult);
+
+    if ((fa / fb) > max || (fa / fb) < min)
+    {
+#ifndef FIXMATH_NO_OVERFLOW
+        ASSERT_EQ_INT(result, fix16_overflow);
+#endif
+    }
+    else
+    {
+        ASSERT_NEAR_DOUBLE(fresult, fix16_to_dbl(result),
+                           fix16_to_dbl(fix16_eps), "%i / %i \n", a, b);
+    }
+
+#else
     TEST(test_abs());
     TEST(test_add());
     TEST(test_mul());
@@ -50,5 +78,6 @@ int main()
     TEST(test_lerp());
     TEST(test_macros());
     //TEST(test_str());
+#endif
     return 0;
 }

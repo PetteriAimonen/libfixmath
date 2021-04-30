@@ -297,18 +297,24 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	
 	uint32_t remainder = (a >= 0) ? a : (-a);
 	uint32_t divider = (b >= 0) ? b : (-b);
-	uint32_t quotient = 0;
-	int bit_pos = 17;
-	
+    uint64_t quotient = 0;
+    int bit_pos = 17;
+
 	// Kick-start the division a bit.
 	// This improves speed in the worst-case scenarios where N and D are large
 	// It gets a lower estimate for the result by N/(D >> 17 + 1).
 	if (divider & 0xFFF00000)
 	{
 		uint32_t shifted_div = ((divider >> 17) + 1);
-		quotient = remainder / shifted_div;
-		remainder -= ((uint64_t)quotient * divider) >> 17;
-	}
+        quotient = remainder / shifted_div;
+        /* For some reason gcc >=9 will get confused, and will use movsx to
+         * copy from uint32_t to uint64_t, this will treat uint32_t as int32_t
+         * and do sign extension which is nonsense. To make it work, i had to
+         * split up this oparation. DO NOT CHANGE.*/
+        uint64_t tmp = ((uint64_t)quotient * (uint64_t)divider);
+        tmp >>= 17;
+        remainder -= (uint32_t)(tmp&0xffffffff);
+    }
 	
 	// If the divider is divisible by 2^n, take advantage of it.
 	while (!(divider & 0xF) && bit_pos >= 4)
@@ -326,8 +332,8 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 		bit_pos -= shift;
 		
 		uint32_t div = remainder / divider;
-		remainder = remainder % divider;
-		quotient += div << bit_pos;
+        remainder = remainder % divider;
+        quotient += (uint64_t)div << bit_pos;
 
 		#ifndef FIXMATH_NO_OVERFLOW
 		if (div & ~(0xFFFFFFFF >> bit_pos))
