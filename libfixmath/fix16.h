@@ -70,9 +70,10 @@ static inline fix16_t fix16_from_float(float a)
 static inline fix16_t fix16_from_dbl(double a)
 {
 	double temp = a * fix16_one;
-#ifndef FIXMATH_NO_ROUNDING
+    /* F16() and F16C() are both rounding allways, so this should as well */
+//#ifndef FIXMATH_NO_ROUNDING
 	temp += (double)((temp >= 0) ? 0.5f : -0.5f);
-#endif
+//#endif
 	return (fix16_t)temp;
 }
 
