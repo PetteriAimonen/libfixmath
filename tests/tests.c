@@ -3,6 +3,7 @@
 #include "tests_lerp.h"
 #include "tests_macros.h"
 #include "tests_sqrt.h"
+#include "tests_str.h"
 #include <stdio.h>
 
 const fix16_t testcases[] = {
@@ -48,5 +49,6 @@ int main()
     TEST(test_sqrt());
     TEST(test_lerp());
     TEST(test_macros());
+    //TEST(test_str());
     return 0;
 }
