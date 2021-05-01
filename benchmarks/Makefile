@@ -2,9 +2,9 @@
 # (currently ARM Cortex M3 and AVR). They are a bit tricky to run, as they
 # depend on specific simulator versions.
 
-FILES = benchmark.c ../libfixmath/fix16.c ../libfixmath/fix16_sqrt.c ../libfixmath/fix16_exp.c
+FILES = benchmark.c interface.c ../libfixmath/fix16.c ../libfixmath/fix16_sqrt.c ../libfixmath/fix16_exp.c
 
-CFLAGS = -DFIXMATH_NO_OVERFLOW -DFIXMATH_NO_ROUNDING -ffast-math -I../libfixmath
+CFLAGS = -std=gnu11 -I../libfixmath
 
 .PHONY clean:
 	rm -f *.elf

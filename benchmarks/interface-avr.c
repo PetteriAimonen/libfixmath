@@ -32,8 +32,3 @@ uint16_t end_timing()
 {
     return TCNT1 - 9;
 }
-
-void print_value(const char *label, int32_t value)
-{
-    printf("%-20s %ld\n", label, value);
-}
