@@ -10,7 +10,8 @@ fix16_t fix16_add(fix16_t a, fix16_t b)
 {
 	// Use unsigned integers because overflow with signed integers is
 	// an undefined operation (http://www.airs.com/blog/archives/120).
-	uint32_t _a = a, _b = b;
+    uint32_t _a = a;
+    uint32_t _b = b;
 	uint32_t sum = _a + _b;
 
 	// Overflow can only happen if sign of a == sign of b, and then
@@ -23,7 +24,8 @@ fix16_t fix16_add(fix16_t a, fix16_t b)
 
 fix16_t fix16_sub(fix16_t a, fix16_t b)
 {
-	uint32_t _a = a, _b = b;
+    uint32_t _a = a;
+    uint32_t _b = b;
 	uint32_t diff = _a - _b;
 
 	// Overflow can only happen if sign of a != sign of b, and then
@@ -71,7 +73,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 	
 	#ifndef FIXMATH_NO_OVERFLOW
 	// The upper 17 bits should all be the same (the sign).
-	uint32_t upper = (product >> 47);
+    uint32_t upper = (product >> 47);
 	#endif
 	
 	if (product < 0)
@@ -310,9 +312,9 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
         /* For some reason gcc >=9 will get confused, and will use movsx to
          * copy from uint32_t to uint64_t, this will treat uint32_t as int32_t
          * and do sign extension which is nonsense. I had no luck making it work*/
-        uint64_t tmp = (quotient * (uint64_t)divider);
+        uint64_t tmp = (quotient * (((uint64_t)divider)&0xffffffff));
         tmp >>= 17;
-        remainder -= (uint32_t)(tmp&0xffffffff);
+        remainder -= (uint32_t)(tmp);
     }
 	
 	// If the divider is divisible by 2^n, take advantage of it.
