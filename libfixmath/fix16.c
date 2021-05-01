@@ -309,9 +309,8 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
         quotient = remainder / shifted_div;
         /* For some reason gcc >=9 will get confused, and will use movsx to
          * copy from uint32_t to uint64_t, this will treat uint32_t as int32_t
-         * and do sign extension which is nonsense. To make it work, i had to
-         * split up this oparation. DO NOT CHANGE.*/
-        uint64_t tmp = ((uint64_t)quotient * (uint64_t)divider);
+         * and do sign extension which is nonsense. I had no luck making it work*/
+        uint64_t tmp = (quotient * (uint64_t)divider);
         tmp >>= 17;
         remainder -= (uint32_t)(tmp&0xffffffff);
     }
