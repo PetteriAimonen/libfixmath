@@ -70,9 +70,10 @@ static inline fix16_t fix16_from_float(float a)
 static inline fix16_t fix16_from_dbl(double a)
 {
 	double temp = a * fix16_one;
-#ifndef FIXMATH_NO_ROUNDING
+    /* F16() and F16C() are both rounding allways, so this should as well */
+//#ifndef FIXMATH_NO_ROUNDING
 	temp += (double)((temp >= 0) ? 0.5f : -0.5f);
-#endif
+//#endif
 	return (fix16_t)temp;
 }
 
@@ -226,6 +227,21 @@ extern void fix16_to_str(fix16_t value, char *buf, int decimals);
  * value is too large or there were garbage characters.
  */
 extern fix16_t fix16_from_str(const char *buf);
+
+static inline uint32_t fix_abs(fix16_t in)
+{
+    if(in == fix16_minimum)
+    {
+        // minimum negative number has same representation as
+        // its absolute value in unsigned
+        return 0x80000000;
+    }
+    else
+    {
+        return ((in >= 0)?(in):(-in));
+    }
+}
+
 
 /** Helper macro for F16C. Replace token with its number of characters/digits. */
 #define FIXMATH_TOKLEN(token) ( sizeof( #token ) - 1 )

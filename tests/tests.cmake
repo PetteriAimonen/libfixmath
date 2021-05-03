@@ -15,15 +15,22 @@ set(nn08 PREFIX=nn08 FIXMATH_NO_OVERFLOW FIXMATH_NO_ROUNDING FIXMATH_OPTIMIZE_8B
 
 enable_testing()
 
+#-fno-sanitize-recover
+set(sanitizer_opts -fsanitize=undefined)
+
 add_custom_target(make_tests)
 
 function(create_variant name defs)
     add_library(libfixmath_${name} STATIC ${libfixmath-srcs})
     target_compile_definitions(libfixmath_${name} PRIVATE ${defs})
+    target_compile_options(libfixmath_${name} PRIVATE ${sanitizer_opts})
+    target_link_options(libfixmath_${name} PRIVATE ${sanitizer_opts})
     add_executable(tests_${name} ${tests-srcs})
     target_link_libraries(tests_${name} PRIVATE libfixmath_${name} m)
     target_include_directories(tests_${name} PRIVATE ${CMAKE_SOURCE_DIR})
     target_compile_definitions(tests_${name} PRIVATE ${defs})
+    target_compile_options(tests_${name} PRIVATE ${sanitizer_opts})
+    target_link_options(tests_${name} PRIVATE ${sanitizer_opts})
     add_dependencies(make_tests tests_${name})
     add_test(NAME tests_${name} COMMAND tests_${name})
 endfunction()

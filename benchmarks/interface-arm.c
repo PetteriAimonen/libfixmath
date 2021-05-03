@@ -25,8 +25,4 @@ uint16_t end_timing()
      return 0x00FFFFFF - STCURRENT - 4;
 }
 
-void print_value(const char *label, int32_t value)
-{
-    printf("%-20s %ld\n", label, value);
-}
 

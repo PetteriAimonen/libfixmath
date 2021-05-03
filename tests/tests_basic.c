@@ -5,11 +5,11 @@ int test_abs_short(void)
 {
     for (unsigned i = 0; i < TESTCASES_COUNT; ++i)
     {
-        fix16_t a       = testcases[i];
-        double  fa      = fix16_to_dbl(a);
-        fix16_t result  = fix16_abs(a);
-        double  fresult = fabs(fa);
-        double  min     = fix16_to_dbl(fix16_minimum);
+        fix16_t a      = testcases[i];
+        double fa      = fix16_to_dbl(a);
+        fix16_t result = fix16_abs(a);
+        double fresult = fabs(fa);
+        double min     = fix16_to_dbl(fix16_minimum);
         if (fa <= min)
         {
 #ifndef FIXMATH_NO_OVERFLOW
