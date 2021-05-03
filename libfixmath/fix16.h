@@ -228,6 +228,21 @@ extern void fix16_to_str(fix16_t value, char *buf, int decimals);
  */
 extern fix16_t fix16_from_str(const char *buf);
 
+static inline uint32_t fix_abs(fix16_t in)
+{
+    if(in == fix16_minimum)
+    {
+        // minimum negative number has same representation as
+        // its absolute value in unsigned
+        return 0x80000000;
+    }
+    else
+    {
+        return ((in >= 0)?(in):(-in));
+    }
+}
+
+
 /** Helper macro for F16C. Replace token with its number of characters/digits. */
 #define FIXMATH_TOKLEN(token) ( sizeof( #token ) - 1 )
 

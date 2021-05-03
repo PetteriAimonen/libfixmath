@@ -73,7 +73,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 	
 	#ifndef FIXMATH_NO_OVERFLOW
 	// The upper 17 bits should all be the same (the sign).
-    uint32_t upper = (product >> 47);
+	uint32_t upper = (product >> 47);
 	#endif
 	
 	if (product < 0)
@@ -175,8 +175,8 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 #if defined(FIXMATH_OPTIMIZE_8BIT)
 fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 {
-	uint32_t _a = (inArg0 >= 0) ? inArg0 : (-inArg0);
-	uint32_t _b = (inArg1 >= 0) ? inArg1 : (-inArg1);
+    uint32_t _a = fix_abs(inArg0);
+    uint32_t _b = fix_abs(inArg1);
 	
 	uint8_t va[4] = {_a, (_a >> 8), (_a >> 16), (_a >> 24)};
 	uint8_t vb[4] = {_b, (_b >> 8), (_b >> 16), (_b >> 24)};
@@ -220,7 +220,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 	// i = 2
 	if (va[0] && vb[2]) mid += (uint16_t)va[0] * vb[2];
 	if (va[1] && vb[1]) mid += (uint16_t)va[1] * vb[1];
-	if (va[2] && vb[0]) mid += (uint16_t)va[2] * vb[0];		
+	if (va[2] && vb[0]) mid += (uint16_t)va[2] * vb[0];
 	
 	// i = 1
 	if (va[0] && vb[1]) low += (uint16_t)va[0] * vb[1];
@@ -297,8 +297,8 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	if (b == 0)
 			return fix16_minimum;
 	
-	uint32_t remainder = (a >= 0) ? a : (-a);
-	uint32_t divider = (b >= 0) ? b : (-b);
+    uint32_t remainder = fix_abs(a);
+    uint32_t divider = fix_abs(b);
     uint64_t quotient = 0;
     int bit_pos = 17;
 
@@ -309,11 +309,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	{
 		uint32_t shifted_div = ((divider >> 17) + 1);
         quotient = remainder / shifted_div;
-        /* For some reason gcc >=9 will get confused, and will use movsx to
-         * copy from uint32_t to uint64_t, this will treat uint32_t as int32_t
-         * and do sign extension which is nonsense. I had no luck making it work*/
-        uint64_t tmp = (quotient * (((uint64_t)divider)&0xffffffff));
-        tmp >>= 17;
+        uint64_t tmp = ((uint64_t)quotient * (uint64_t)divider) >> 17;
         remainder -= (uint32_t)(tmp);
     }
 	
@@ -382,8 +378,8 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	if (b == 0)
 		return fix16_minimum;
 	
-	uint32_t remainder = (a >= 0) ? a : (-a);
-	uint32_t divider = (b >= 0) ? b : (-b);
+    uint32_t remainder = fix_abs(a);
+    uint32_t divider = fix_abs(b);
 
 	uint32_t quotient = 0;
 	uint32_t bit = 0x10000;
