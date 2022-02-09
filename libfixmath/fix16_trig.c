@@ -16,8 +16,11 @@ static fix16_t _fix16_atan_cache_value[4096] = { 0 };
 
 fix16_t fix16_sin_parabola(fix16_t inAngle)
 {
-	fix16_t abs_inAngle, abs_retval, retval;
+	fix16_t abs_inAngle, retval;
 	fix16_t mask;
+	#ifndef FIXMATH_FAST_SIN
+	fix16_t abs_retval;
+	#endif
 
 	/* Absolute function */
 	mask = (inAngle >> (sizeof(fix16_t)*CHAR_BIT-1));
