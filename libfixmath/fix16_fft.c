@@ -128,7 +128,7 @@ void fix16_fft(INPUT_TYPE *input, fix16_t *real, fix16_t *imag, unsigned transfo
         four_point_dft(input + INPUT_INDEX(rbit_n(i, log_length - 2)), transform_length / 4, real + 4*i, imag + 4*i);
     }
 
-    for (i = 2; i < log_length; i++)
+    for (i = 2; i < (unsigned) log_length; i++)
     {
         butterfly(real, imag, 1 << i, transform_length / (2 << i));
     }
