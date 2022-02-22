@@ -71,7 +71,7 @@ void fix16_to_str(fix16_t value, char *buf, int decimals)
 
 fix16_t fix16_from_str(const char *buf)
 {
-    while (isspace(*buf))
+    while (isspace((unsigned char) *buf))
         buf++;
     
     /* Decode the sign */
@@ -82,7 +82,7 @@ fix16_t fix16_from_str(const char *buf)
     /* Decode the integer part */
     uint32_t intpart = 0;
     int count = 0;
-    while (isdigit(*buf))
+    while (isdigit((unsigned char) *buf))
     {
         intpart *= 10;
         intpart += *buf++ - '0';
@@ -102,7 +102,7 @@ fix16_t fix16_from_str(const char *buf)
         
         uint32_t fracpart = 0;
         uint32_t scale = 1;
-        while (isdigit(*buf) && scale < 100000)
+        while (isdigit((unsigned char) *buf) && scale < 100000)
         {
             scale *= 10;
             fracpart *= 10;
@@ -115,7 +115,7 @@ fix16_t fix16_from_str(const char *buf)
     /* Verify that there is no garbage left over */
     while (*buf != '\0')
     {
-        if (!isdigit(*buf) && !isspace(*buf))
+        if (!isdigit((unsigned char) *buf) && !isspace((unsigned char) *buf))
             return fix16_overflow;
         
         buf++;
