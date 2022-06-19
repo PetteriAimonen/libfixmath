@@ -1,5 +1,11 @@
 #include "fix16.h"
+#ifdef __KERNEL__
+#include <linux/types.h>
+#define uint_fast8_t uint8_t
+#else
 #include <stdbool.h>
+#endif
+
 
 #ifndef FIXMATH_NO_CACHE
 static fix16_t _fix16_exp_cache_index[4096]  = { 0 };

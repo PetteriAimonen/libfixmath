@@ -6,7 +6,11 @@ extern "C"
 {
 #endif
 
+#ifdef __KERNEL__
+#include <linux/types.h>
+#else
 #include <stdint.h>
+#endif
 
 typedef uint32_t fract32_t;
 

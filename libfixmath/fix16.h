@@ -21,7 +21,11 @@ extern "C"
 # endif
 #endif
 
+#ifdef __KERNEL__
+#include <linux/types.h>
+#else
 #include <stdint.h>
+#endif
 
 typedef int32_t fix16_t;
 
