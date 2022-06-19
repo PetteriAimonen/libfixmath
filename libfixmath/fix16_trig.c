@@ -1,4 +1,10 @@
+#ifdef __KERNEL__
+#ifndef CHAR_BIT
+#define CHAR_BIT 8	/* Normally in <limits.h> */
+#endif
+#else
 #include <limits.h>
+#endif
 #include "fix16.h"
 
 #if defined(FIXMATH_SIN_LUT)

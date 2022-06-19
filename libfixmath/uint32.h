@@ -6,7 +6,11 @@ extern "C"
 {
 #endif
 
+#ifdef __KERNEL__
+#include <linux/types.h>
+#else
 #include <stdint.h>
+#endif
 
 /*! Performs an unsigned log-base2 on the specified unsigned integer and returns the result.
 */

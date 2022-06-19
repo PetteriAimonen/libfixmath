@@ -8,7 +8,11 @@
  * This file is released to public domain.
  */
 
+#ifdef __KERNEL__
+#include <linux/types.h>
+#else
 #include <stdint.h>
+#endif
 #include "fix16.h"
 
 // You can change the input datatype and intermediate scaling here.

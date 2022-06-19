@@ -1,8 +1,10 @@
 #include "fix16.h"
-#include <stdbool.h>
-#ifndef FIXMATH_NO_CTYPE
-#include <ctype.h>
+#ifdef __KERNEL__
+#include <linux/types.h>
 #else
+#include <stdbool.h>
+#endif
+#if defined(FIXMATH_NO_CTYPE) || defined(__KERNEL__)
 static inline int isdigit(int c)
 {
     return c >= '0' && c <= '9';
@@ -12,6 +14,8 @@ static inline int isspace(int c)
 {
     return c == ' ' || c == '\r' || c == '\n' || c == '\t' || c == '\v' || c == '\f';
 }
+#else
+#include <ctype.h>
 #endif
 
 static const uint32_t scales[8] = {
