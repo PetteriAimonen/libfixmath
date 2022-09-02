@@ -22,6 +22,8 @@ add_custom_target(make_tests)
 
 function(create_variant name defs)
     add_library(libfixmath_${name} STATIC ${libfixmath-srcs})
+    target_include_directories(libfixmath_${name} INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR})
     target_compile_definitions(libfixmath_${name} PRIVATE ${defs})
     target_compile_options(libfixmath_${name} PRIVATE ${sanitizer_opts})
     target_link_options(libfixmath_${name} PRIVATE ${sanitizer_opts})
