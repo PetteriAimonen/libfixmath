@@ -1,6 +1,6 @@
 file(GLOB libfixmath-srcs libfixmath/*.c)
 
-add_library(libfixmath STATIC ${libfixmath-srcs})
+add_library(fixmath SHARED ${libfixmath-srcs})
 
-target_include_directories(libfixmath INTERFACE
+target_include_directories(fixmath INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR})

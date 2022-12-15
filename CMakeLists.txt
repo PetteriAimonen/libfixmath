@@ -17,11 +17,11 @@ file(GLOB fixsingen-srcs fixsingen/*.c)
 file(GLOB fixtest-srcs fixtest/*.c fixtest/*.h)
 
 add_executable(fixtest ${fixtest-srcs})
-target_link_libraries(fixtest PRIVATE libfixmath m)
+target_link_libraries(fixtest PRIVATE fixmath m)
 target_include_directories(fixtest PRIVATE ${CMAKE_SOURCE_DIR})
 
 add_executable(fixsingen ${fixsingen-srcs})
-target_link_libraries(fixsingen PRIVATE libfixmath m)
+target_link_libraries(fixsingen PRIVATE fixmath m)
 target_include_directories(fixsingen PRIVATE ${CMAKE_SOURCE_DIR})
 
 
