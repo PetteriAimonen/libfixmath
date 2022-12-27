@@ -15,8 +15,13 @@ set(nn08 PREFIX=nn08 FIXMATH_NO_OVERFLOW FIXMATH_NO_ROUNDING FIXMATH_OPTIMIZE_8B
 
 enable_testing()
 
-#-fno-sanitize-recover
-set(sanitizer_opts -fsanitize=undefined)
+# -fno-sanitize-recover
+if(APPLE AND CMAKE_OSX_ARCHITECTURES MATCHES "ppc|ppc64")
+# Darwin PPC does not support ubsan presently.
+    set(sanitizer_opts "")
+else()
+    set(sanitizer_opts -fsanitize=undefined)
+endif()
 
 add_custom_target(make_tests)
 
@@ -37,7 +42,6 @@ function(create_variant name defs)
     add_test(NAME tests_${name} COMMAND tests_${name})
 endfunction()
 
-
 create_variant("ro64" "${ro64}")
 create_variant("no64" "${no64}")
 create_variant("rn64" "${rn64}")
@@ -50,5 +54,3 @@ create_variant("ro08" "${ro08}")
 create_variant("no08" "${no08}")
 create_variant("rn08" "${rn08}")
 create_variant("nn08" "${nn08}")
-
-
