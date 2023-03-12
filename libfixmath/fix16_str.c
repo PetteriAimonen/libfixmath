@@ -93,9 +93,14 @@ fix16_t fix16_from_str(const char *buf)
         count++;
     }
     
+    #ifdef FIXMATH_NO_OVERFLOW
+    if (count == 0)
+        return fix16_overflow;
+    #else
     if (count == 0 || count > 5
         || intpart > 32768 || (!negative && intpart > 32767))
         return fix16_overflow;
+    #endif
     
     fix16_t value = intpart << 16;
     
