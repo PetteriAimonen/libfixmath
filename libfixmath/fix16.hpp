@@ -25,6 +25,31 @@ class Fix16 {
 		Fix16 & operator=(const float rhs)   { value = fix16_from_float(rhs); return *this; }
 		Fix16 & operator=(const int16_t rhs) { value = fix16_from_int(rhs);   return *this; }
 
+#if defined(FIXMATH_SATURATING_ARITHMETIC) && !defined(FIXMATH_NO_OVERFLOW)
+		Fix16 & operator+=(const Fix16 &rhs)  { value = fix16_sadd(value, rhs.value); return *this; }
+		Fix16 & operator+=(const fix16_t rhs) { value = fix16_sadd(value, rhs); return *this; }
+		Fix16 & operator+=(const double rhs)  { value = fix16_sadd(value, fix16_from_dbl(rhs)); return *this; }
+		Fix16 & operator+=(const float rhs)   { value = fix16_sadd(value, fix16_from_float(rhs)); return *this; }
+		Fix16 & operator+=(const int16_t rhs) { value = fix16_sadd(value, fix16_from_int(rhs)); return *this; }
+
+		Fix16 & operator-=(const Fix16 &rhs)  { value = fix16_ssub(value, rhs.value); return *this; }
+		Fix16 & operator-=(const fix16_t rhs) { value = fix16_ssub(value, rhs); return *this; }
+		Fix16 & operator-=(const double rhs)  { value = fix16_ssub(value, fix16_from_dbl(rhs)); return *this; }
+		Fix16 & operator-=(const float rhs)   { value = fix16_ssub(value, fix16_from_float(rhs)); return *this; }
+		Fix16 & operator-=(const int16_t rhs) { value = fix16_ssub(value, fix16_from_int(rhs)); return *this; }
+
+		Fix16 & operator*=(const Fix16 &rhs)  { value = fix16_smul(value, rhs.value); return *this; }
+		Fix16 & operator*=(const fix16_t rhs) { value = fix16_smul(value, rhs); return *this; }
+		Fix16 & operator*=(const double rhs)  { value = fix16_smul(value, fix16_from_dbl(rhs)); return *this; }
+		Fix16 & operator*=(const float rhs)   { value = fix16_smul(value, fix16_from_float(rhs)); return *this; }
+		Fix16 & operator*=(const int16_t rhs) { value *= rhs; return *this; }
+
+		Fix16 & operator/=(const Fix16 &rhs)  { value = fix16_sdiv(value, rhs.value); return *this; }
+		Fix16 & operator/=(const fix16_t rhs) { value = fix16_sdiv(value, rhs); return *this; }
+		Fix16 & operator/=(const double rhs)  { value = fix16_sdiv(value, fix16_from_dbl(rhs)); return *this; }
+		Fix16 & operator/=(const float rhs)   { value = fix16_sdiv(value, fix16_from_float(rhs)); return *this; }
+		Fix16 & operator/=(const int16_t rhs) { value /= rhs; return *this; }
+#else
 		Fix16 & operator+=(const Fix16 &rhs)  { value += rhs.value;             return *this; }
 		Fix16 & operator+=(const fix16_t rhs) { value += rhs;                   return *this; }
 		Fix16 & operator+=(const double rhs)  { value += fix16_from_dbl(rhs);   return *this; }
@@ -48,6 +73,7 @@ class Fix16 {
 		Fix16 & operator/=(const double rhs)  { value = fix16_div(value, fix16_from_dbl(rhs)); return *this; }
 		Fix16 & operator/=(const float rhs)   { value = fix16_div(value, fix16_from_float(rhs)); return *this; }
 		Fix16 & operator/=(const int16_t rhs) { value /= rhs; return *this; }
+#endif
 
 		const Fix16 operator+(const Fix16 &other) const  { Fix16 ret = *this; ret += other; return ret; }
 		const Fix16 operator+(const fix16_t other) const { Fix16 ret = *this; ret += other; return ret; }
@@ -68,6 +94,7 @@ class Fix16 {
 		const Fix16 operator-(const double other) const  { Fix16 ret = *this; ret -= other; return ret; }
 		const Fix16 operator-(const float other) const   { Fix16 ret = *this; ret -= other; return ret; }
 		const Fix16 operator-(const int16_t other) const { Fix16 ret = *this; ret -= other; return ret; }
+		const Fix16 operator-() const { return -value; }
 
 #ifndef FIXMATH_NO_OVERFLOW
 		const Fix16 ssub(const Fix16 &other)  const { Fix16 ret = fix16_sadd(value, -other.value);             return ret; }
