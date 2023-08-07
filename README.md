@@ -50,7 +50,7 @@ The simplest way to use `libfixmath` as a dependency is with CMake's [FetchConte
 include(FetchContent)
 FetchContent_Declare(
     libfixmath
-    GIT_REPOSITORY https://github.com/intercreate/libfixmath.git
+    GIT_REPOSITORY https://github.com/PetteriAimonen/libfixmath.git
     GIT_TAG <the long git hash of the version you want>
 )
 FetchContent_MakeAvailable(libfixmath)
