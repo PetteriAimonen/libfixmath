@@ -21,6 +21,13 @@ extern "C"
 # endif
 #endif
 
+/* Automatically define FIXMATH_NO_HARD_DIVISION to maintain backwards
+ * compatibility with usage of FIXMATH_OPTIMIZE_8BIT.
+ */
+#if defined(FIXMATH_OPTIMIZE_8BIT)
+#  define FIXMATH_NO_HARD_DIVISION
+#endif
+
 #ifdef __KERNEL__
 #include <linux/types.h>
 #else

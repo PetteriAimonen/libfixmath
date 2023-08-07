@@ -274,7 +274,7 @@ fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1)
  * Performs 32-bit divisions repeatedly to reduce the remainder. For this to
  * be efficient, the processor has to have 32-bit hardware division.
  */
-#if !defined(FIXMATH_OPTIMIZE_8BIT)
+#if !defined(FIXMATH_NO_HARD_DIVISION)
 #ifdef __GNUC__
 // Count leading zeros, using processor-specific instruction if available.
 #define clz(x) (__builtin_clzl(x) - (8 * sizeof(long) - 32))
@@ -361,13 +361,13 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	
 	return result;
 }
-#endif
+#endif /* !defined(FIXMATH_NO_HARD_DIVISION) */
 
 /* Alternative 32-bit implementation of fix16_div. Fastest on e.g. Atmel AVR.
  * This does the division manually, and is therefore good for processors that
  * do not have hardware division.
  */
-#if defined(FIXMATH_OPTIMIZE_8BIT)
+#if defined(FIXMATH_NO_HARD_DIVISION)
 fix16_t fix16_div(fix16_t a, fix16_t b)
 {
 	// This uses the basic binary restoring division algorithm.
@@ -444,7 +444,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	
 	return result;
 }
-#endif
+#endif /* defined(FIXMATH_NO_HARD_DIVISION) */
 
 #ifndef FIXMATH_NO_OVERFLOW
 /* Wrapper around fix16_div to add saturating arithmetic. */
@@ -466,7 +466,7 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1)
 
 fix16_t fix16_mod(fix16_t x, fix16_t y)
 {
-	#ifdef FIXMATH_OPTIMIZE_8BIT
+	#ifdef FIXMATH_NO_HARD_DIVISION
 		/* The reason we do this, rather than use a modulo operator
 		 * is that if you don't have a hardware divider, this will result
 		 * in faster operations when the angles are close to the bounds. 

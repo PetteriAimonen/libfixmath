@@ -27,6 +27,13 @@ Configuration options are compile definitions that are checked by the preprocess
 - `#ifndef`: Use static memory caches for exponents (32KB) and trigonometry (80KB). 
 - `#ifdef`: Do not use caches.
 
+#### `FIXMATH_NO_HARD_DIVISION`
+
+Note: will be automatically defined if `FIXMATH_OPTIMIZE_8BIT` is defined.
+
+- `#ifndef`: For platforms that have hardware integer division.
+- `#ifdef`: For platforms that do not have hardware integer division.
+
 #### `FIXMATH_NO_OVERFLOW`
 
 - `#ifndef`: Check for overflow and return the overflow constants. 
@@ -40,7 +47,7 @@ Configuration options are compile definitions that are checked by the preprocess
 #### `FIXMATH_OPTIMIZE_8BIT`
 
 - `#ifndef`: Do not optimize for processors with 8-bit multiplication like Atmel AVR. 
-- `#ifdef`: Optimize for processors like Atmel AVR.  Compiles `fix16_div` for platforms that do not have hardware division.
+- `#ifdef`: Optimize for processors like Atmel AVR.  Also defines `FIXMATH_NO_HARD_DIVISION` automatically in `fix16.h`.
 
 # Include the `libfixmath` library in your CMake Project
 
@@ -59,6 +66,7 @@ target_compile_definitions(libfixmath PRIVATE
     # FIXMATH_FAST_SIN
     # FIXMATH_NO_64BIT
     # FIXMATH_NO_CACHE
+    # FIXMATH_NO_HARD_DIVISION
     # FIXMATH_NO_OVERFLOW
     # FIXMATH_NO_ROUNDING
     # FIXMATH_OPTIMIZE_8BIT
