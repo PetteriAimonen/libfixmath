@@ -135,6 +135,15 @@ fix16_t fix16_asin(fix16_t x)
 		|| (x < -fix16_one))
 		return 0;
 
+	/* Handle boundary cases to avoid division by zero.
+	 * The formula asin(x) = atan(x / sqrt(1 - x²)) has a singularity at x = ±1
+	 * because sqrt(1 - 1) = 0, causing division by zero.
+	 */
+	if(x == fix16_one)
+		return (fix16_pi >> 1);  /* π/2 */
+	if(x == -fix16_one)
+		return -(fix16_pi >> 1); /* -π/2 */
+
 	fix16_t out;
 	out = (fix16_one - fix16_mul(x, x));
 	out = fix16_div(x, fix16_sqrt(out));
@@ -150,6 +159,14 @@ fix16_t fix16_acos(fix16_t x)
 fix16_t fix16_atan2(fix16_t inY , fix16_t inX)
 {
 	fix16_t abs_inY, mask, angle, r, r_3;
+
+	/* Handle the singularity at (0, 0).
+	 * IEEE 754-2008 specifies that atan2(±0, ±0) should return specific values,
+	 * but for simplicity and compatibility, we return 0.
+	 * This also avoids division by zero in the algorithm below.
+	 */
+	if (inX == 0 && inY == 0)
+		return 0;
 
 	#ifndef FIXMATH_NO_CACHE
 	uintptr_t hash = (inX ^ inY);

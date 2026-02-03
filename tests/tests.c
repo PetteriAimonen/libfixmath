@@ -4,6 +4,7 @@
 #include "tests_macros.h"
 #include "tests_sqrt.h"
 #include "tests_str.h"
+#include "tests_trig.h"
 #include <stdio.h>
 
 const fix16_t testcases[] = {
@@ -77,6 +78,7 @@ int main()
     TEST(test_sqrt());
     TEST(test_lerp());
     TEST(test_macros());
+    TEST(test_trig());
     //TEST(test_str());
 #endif
     return 0;
