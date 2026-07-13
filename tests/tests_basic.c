@@ -1,6 +1,19 @@
 #include "tests_basic.h"
 #include "tests.h"
 
+int test_to_int(void)
+{
+#ifndef FIXMATH_NO_ROUNDING
+    ASSERT_EQ_INT(fix16_to_int(fix16_minimum), -32768);
+    ASSERT_EQ_INT(fix16_to_int(fix16_maximum), 32768);
+    ASSERT_EQ_INT(fix16_to_int(0x00007FFF), 0);
+    ASSERT_EQ_INT(fix16_to_int(0x00008000), 1);
+    ASSERT_EQ_INT(fix16_to_int(-0x00007FFF), 0);
+    ASSERT_EQ_INT(fix16_to_int(-0x00008000), -1);
+#endif
+    return 0;
+}
+
 int test_abs_short(void)
 {
     for (unsigned i = 0; i < TESTCASES_COUNT; ++i)
