@@ -70,6 +70,7 @@ int main()
     }
 
 #else
+    TEST(test_to_int());
     TEST(test_abs());
     TEST(test_add());
     TEST(test_mul());

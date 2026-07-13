@@ -63,9 +63,13 @@ static inline int fix16_to_int(fix16_t a)
 #ifdef FIXMATH_NO_ROUNDING
     return (a >> 16);
 #else
-	if (a >= 0)
-		return (a + (fix16_one >> 1)) / fix16_one;
-	return (a - (fix16_one >> 1)) / fix16_one;
+	int result = a / fix16_one;
+	fix16_t remainder = a % fix16_one;
+	if (remainder >= (fix16_one >> 1))
+		return result + 1;
+	if (remainder <= -(fix16_one >> 1))
+		return result - 1;
+	return result;
 #endif
 }
 
