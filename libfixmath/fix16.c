@@ -41,8 +41,9 @@ fix16_t fix16_sadd(fix16_t a, fix16_t b)
 {
 	fix16_t result = fix16_add(a, b);
 
+	// With a == 0, fix16_overflow can only be the valid fix16_minimum.
 	if (result == fix16_overflow)
-		return (a >= 0) ? fix16_maximum : fix16_minimum;
+		return (a > 0) ? fix16_maximum : fix16_minimum;
 
 	return result;
 }	
