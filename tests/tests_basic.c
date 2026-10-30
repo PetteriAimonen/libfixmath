@@ -76,9 +76,36 @@ int test_add_short(void)
     return 0;
 }
 
+#ifndef FIXMATH_NO_OVERFLOW
+int test_sadd(void)
+{
+    ASSERT_EQ_INT(fix16_sadd(0, fix16_minimum), fix16_minimum);
+    ASSERT_EQ_INT(fix16_sadd(fix16_minimum, 0), fix16_minimum);
+    ASSERT_EQ_INT(fix16_sadd(0, fix16_maximum), fix16_maximum);
+    ASSERT_EQ_INT(fix16_sadd(fix16_maximum, 0), fix16_maximum);
+    ASSERT_EQ_INT(fix16_sadd(fix16_maximum, 1), fix16_maximum);
+    ASSERT_EQ_INT(fix16_sadd(fix16_minimum, -1), fix16_minimum);
+
+    for (unsigned i = 0; i < TESTCASES_COUNT; ++i)
+    {
+        for (unsigned j = 0; j < TESTCASES_COUNT; ++j)
+        {
+            int64_t sum = (int64_t)testcases[i] + testcases[j];
+            fix16_t expected = (sum > fix16_maximum) ? fix16_maximum :
+                              (sum < fix16_minimum) ? fix16_minimum : (fix16_t)sum;
+            ASSERT_EQ_INT(fix16_sadd(testcases[i], testcases[j]), expected);
+        }
+    }
+    return 0;
+}
+#endif
+
 int test_add(void)
 {
     TEST(test_add_short());
+#ifndef FIXMATH_NO_OVERFLOW
+    TEST(test_sadd());
+#endif
     return 0;
 }
 
