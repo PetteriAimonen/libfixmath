@@ -40,7 +40,7 @@ const fix16_t testcases[] = {
 
 unsigned stack_depth = 0;
 
-int main()
+int main(int argc, char *argv[])
 {
     printf("\033[1;34m\nVARIANT: \033[39m" STR2(PREFIX) "\033[0m\n");
 #if 0
@@ -71,6 +71,9 @@ int main()
     }
 
 #else
+    if (argc > 1 && strcmp(argv[1], "staging") == 0)
+        return test_staging();
+
     TEST(test_to_int());
     TEST(test_abs());
     TEST(test_add());
@@ -81,7 +84,6 @@ int main()
     TEST(test_lerp());
     TEST(test_macros());
     TEST(test_trig());
-    TEST(test_staging());
     //TEST(test_str());
 #endif
     return 0;
