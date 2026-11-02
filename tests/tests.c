@@ -3,6 +3,7 @@
 #include "tests_lerp.h"
 #include "tests_macros.h"
 #include "tests_sqrt.h"
+#include "tests_staging.h"
 #include "tests_str.h"
 #include "tests_trig.h"
 #include <stdio.h>
@@ -80,6 +81,7 @@ int main()
     TEST(test_lerp());
     TEST(test_macros());
     TEST(test_trig());
+    TEST(test_staging());
     //TEST(test_str());
 #endif
     return 0;
