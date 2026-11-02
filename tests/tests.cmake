@@ -27,6 +27,7 @@ function(create_variant name)
     target_link_options(tests_${name} PRIVATE ${sanitizer_opts})
     add_dependencies(make_tests tests_${name})
     add_test(NAME tests_${name} COMMAND tests_${name})
+    add_test(NAME staging_${name} COMMAND tests_${name} staging)
 endfunction()
 
 create_variant(ro64)
