@@ -20,6 +20,13 @@ fix16_t fix16_exp(fix16_t inValue) {
 	if(inValue >= 681391   ) return fix16_maximum;
 	if(inValue <= -772243  ) return 0;
 
+	// Use exp(x) = exp(x/2)^2 to avoid overflow in the reciprocal calculation.
+	if (inValue < -fix16_from_int(10))
+	{
+		fix16_t half = fix16_exp(inValue / 2);
+		return fix16_mul(half, half);
+	}
+
 	#ifndef FIXMATH_NO_CACHE
     fix16_t tempIndex = (inValue ^ (inValue >> 4)) & 0x0FFF;
 	if(_fix16_exp_cache_index[tempIndex] == inValue)
