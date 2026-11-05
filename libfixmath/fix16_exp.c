@@ -181,15 +181,16 @@ fix16_t fix16_log2(fix16_t x)
 	// log2(-ve) gives a complex result.
 	if (x <= 0) return fix16_overflow;
 
-	// If the input is less than one, the result is -log2(1.0 / in)
+	// Normalize small inputs without forming an overflowing reciprocal.
 	if (x < fix16_one)
 	{
-		// Note that the inverse of this would overflow.
-		// This is the exact answer for log2(1.0 / 65536)
-		if (x == 1) return fix16_from_int(-16);
-
-		fix16_t inverse = fix16_div(fix16_one, x);
-		return -fix16__log2_inner(inverse);
+		fix16_t offset = 0;
+		while (x < fix16_one)
+		{
+			x *= 2;
+			offset -= fix16_one;
+		}
+		return fix16__log2_inner(x) + offset;
 	}
 
 	// If input >= 1, just proceed as normal.
