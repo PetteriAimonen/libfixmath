@@ -5,9 +5,23 @@
 fract32_t fract32_create(uint32_t inNumerator, uint32_t inDenominator) {
 	if(inDenominator <= inNumerator)
 		return 0xFFFFFFFF;
-	uint32_t tempMod = (inNumerator % inDenominator);
-	uint32_t tempDiv = (0xFFFFFFFF / (inDenominator - 1));
-	return (tempMod * tempDiv);
+	#ifndef FIXMATH_NO_64BIT
+	return (fract32_t)(((uint64_t)inNumerator << 32) / inDenominator);
+	#else
+	fract32_t result = 0;
+	unsigned i;
+	for (i = 0; i < 32; i++) {
+		result <<= 1;
+		/* Compare before doubling so the remainder cannot overflow. */
+		if (inNumerator >= inDenominator - inNumerator) {
+			inNumerator -= inDenominator - inNumerator;
+			result |= 1;
+		} else {
+			inNumerator <<= 1;
+		}
+	}
+	return result;
+	#endif
 }
 
 fract32_t fract32_invert(fract32_t inFract) {
