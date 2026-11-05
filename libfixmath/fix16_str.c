@@ -102,7 +102,7 @@ fix16_t fix16_from_str(const char *buf)
         return fix16_overflow;
     #endif
     
-    fix16_t value = intpart << 16;
+    uint32_t value = intpart << 16;
     
     /* Decode the decimal part */
     if (*buf == '.' || *buf == ',')
@@ -130,6 +130,13 @@ fix16_t fix16_from_str(const char *buf)
         buf++;
     }
     
-    return negative ? -value : value;
+    #ifndef FIXMATH_NO_OVERFLOW
+    if (value > (negative ? 0x80000000u : 0x7FFFFFFFu))
+        return fix16_overflow;
+    #endif
+
+    if (negative && value == 0x80000000u)
+        return fix16_minimum;
+    return negative ? -(fix16_t)value : (fix16_t)value;
 }
 
