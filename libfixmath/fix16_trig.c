@@ -117,6 +117,8 @@ fix16_t fix16_sin(fix16_t inAngle)
 
 fix16_t fix16_cos(fix16_t inAngle)
 {
+	if (inAngle > fix16_maximum - (fix16_pi >> 1))
+		inAngle -= fix16_pi << 1;
 	return fix16_sin(inAngle + (fix16_pi >> 1));
 }
 
