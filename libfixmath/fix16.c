@@ -203,7 +203,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 	if (va[3] && vb[1]) mid += (uint16_t)va[3] * vb[1];
 	
 	#ifndef FIXMATH_NO_OVERFLOW
-	if (mid & 0xFF000000) return fix16_overflow;
+	if (mid & 0xFFFF8000) return fix16_overflow;
 	#endif
 	mid <<= 8;
 	
