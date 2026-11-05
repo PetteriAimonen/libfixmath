@@ -54,7 +54,7 @@ fix16_t fix16_exp(fix16_t inValue) {
 	if (neg) result = fix16_div(fix16_one, result);
             
 	#ifndef FIXMATH_NO_CACHE
-	_fix16_exp_cache_index[tempIndex] = inValue;
+	_fix16_exp_cache_index[tempIndex] = neg ? -inValue : inValue;
 	_fix16_exp_cache_value[tempIndex] = result;
 	#endif
 
