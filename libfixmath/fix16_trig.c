@@ -178,17 +178,36 @@ fix16_t fix16_atan2(fix16_t inY , fix16_t inX)
 		return _fix16_atan_cache_value[hash];
 	#endif
 
-	/* Absolute inY */
-	mask = (inY >> (sizeof(fix16_t)*CHAR_BIT-1));
-	abs_inY = (inY + mask) ^ mask;
+	fix16_t x = inX, y = inY;
+	uint32_t abs_x = inX < 0 ? 0u - (uint32_t)inX : (uint32_t)inX;
+	uint32_t abs_y = inY < 0 ? 0u - (uint32_t)inY : (uint32_t)inY;
+	/* Scale large coordinates to keep sums representable. */
+	if (abs_x > (uint32_t)fix16_maximum
+		|| abs_y > (uint32_t)fix16_maximum - abs_x)
+	{
+		if (abs_x / 2 + abs_y / 2 > (uint32_t)fix16_maximum)
+		{
+			x /= 4;
+			y /= 4;
+		}
+		else
+		{
+			x /= 2;
+			y /= 2;
+		}
+	}
+
+	/* Absolute y */
+	mask = (y >> (sizeof(fix16_t)*CHAR_BIT-1));
+	abs_inY = (y + mask) ^ mask;
 
 	if (inX >= 0)
 	{
-		r = fix16_div( (inX - abs_inY), (inX + abs_inY));
+		r = fix16_div( (x - abs_inY), (x + abs_inY));
 		r_3 = fix16_mul(fix16_mul(r, r),r);
 		angle = fix16_mul(0x00003240 , r_3) - fix16_mul(0x0000FB50,r) + PI_DIV_4;
 	} else {
-		r = fix16_div( (inX + abs_inY), (abs_inY - inX));
+		r = fix16_div( (x + abs_inY), (abs_inY - x));
 		r_3 = fix16_mul(fix16_mul(r, r),r);
 		angle = fix16_mul(0x00003240 , r_3)
 			- fix16_mul(0x0000FB50,r)
