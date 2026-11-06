@@ -306,21 +306,25 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	// Kick-start the division a bit.
 	// This improves speed in the worst-case scenarios where N and D are large
 	// It gets a lower estimate for the result by N/(D >> 17 + 1).
+	// Keep the fractional seed product for an exact final correction.
+	uint32_t seed_low = 0;
 	if (divider & 0xFFF00000)
 	{
 		uint32_t shifted_div = ((divider >> 17) + 1);
         quotient = remainder / shifted_div;
-        uint64_t tmp = ((uint64_t)quotient * (uint64_t)divider) >> 17;
-        remainder -= (uint32_t)(tmp);
+        uint64_t tmp = ((uint64_t)quotient * (uint64_t)divider);
+        seed_low = (uint32_t)tmp & 0x1FFFFu;
+        remainder -= (uint32_t)(tmp >> 17);
     }
-	
+
 	// If the divider is divisible by 2^n, take advantage of it.
 	while (!(divider & 0xF) && bit_pos >= 4)
 	{
 		divider >>= 4;
 		bit_pos -= 4;
 	}
-	
+	seed_low >>= 17 - bit_pos;
+
 	while (remainder && bit_pos >= 0)
 	{
 		// Shift remainder as much as we can without overflowing
@@ -342,6 +346,9 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 		bit_pos--;
 	}
 	
+	// The loop leaves twice the residual; subtract the seed fraction.
+	if ((remainder >> 1) < seed_low) quotient--;
+
 	#ifndef FIXMATH_NO_ROUNDING
 	// Quotient is always positive so rounding is easy
 	quotient++;
