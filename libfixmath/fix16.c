@@ -479,6 +479,14 @@ fix16_t fix16_mod(fix16_t x, fix16_t y)
 		 * is that if you don't have a hardware divider, this will result
 		 * in faster operations when the angles are close to the bounds. 
 		 */
+		/* Like %, the result takes the sign of x, so only the magnitude
+		 * of y matters. With a negative y the loops below would never end
+		 * before x overflows.
+		 */
+		if (y == fix16_minimum)
+			return (x == fix16_minimum) ? 0 : x;
+		if (y < 0)
+			y = -y;
 		while(x >=  y) x -= y;
 		while(x <= -y) x += y;
 	#else

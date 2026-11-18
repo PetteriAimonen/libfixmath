@@ -24,7 +24,7 @@ extern "C"
 /* Automatically define FIXMATH_NO_HARD_DIVISION to maintain backwards
  * compatibility with usage of FIXMATH_OPTIMIZE_8BIT.
  */
-#if defined(FIXMATH_OPTIMIZE_8BIT)
+#if defined(FIXMATH_OPTIMIZE_8BIT) && !defined(FIXMATH_NO_HARD_DIVISION)
 #  define FIXMATH_NO_HARD_DIVISION
 #endif
 
