@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
     TEST(test_mul());
     TEST(test_div());
     TEST(test_sub());
+    TEST(test_mod());
     TEST(test_sqrt());
     TEST(test_lerp());
     TEST(test_macros());

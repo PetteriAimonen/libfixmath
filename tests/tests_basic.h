@@ -7,5 +7,6 @@ int test_add(void);
 int test_mul(void);
 int test_div(void);
 int test_sub();
+int test_mod(void);
 
 #endif // TESTS_BASIC_H

@@ -284,3 +284,34 @@ int test_sub()
     TEST(test_sub_short());
     return 0;
 }
+
+int test_mod_short(void)
+{
+    for (unsigned i = 0; i < TESTCASES_COUNT; ++i)
+    {
+        for (unsigned j = 0; j < TESTCASES_COUNT; ++j)
+        {
+            fix16_t a = testcases[i];
+            fix16_t b = testcases[j];
+            // x % 0 is undefined and fix16_minimum % -1 overflows
+            if (b == 0 || (a == fix16_minimum && b == -1))
+            {
+                continue;
+            }
+            fix16_t result = fix16_mod(a, b);
+
+            double fa      = fix16_to_dbl(a);
+            double fb      = fix16_to_dbl(b);
+            double fresult = fmod(fa, fb);
+
+            ASSERT_EQ_INT(result, fix16_from_dbl(fresult));
+        }
+    }
+    return 0;
+}
+
+int test_mod(void)
+{
+    TEST(test_mod_short());
+    return 0;
+}
